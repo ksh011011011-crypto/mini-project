@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>세현 시네마 - SEHYUN CINEMA</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ===== POPUP ===== -->
+  <div id="popup-overlay" class="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-header">
+        <span class="popup-logo">SEHYUN CINEMA</span>
+        <button class="popup-close-btn" id="popup-close-x" aria-label="닫기">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="popup-body">
+        <p class="popup-tagline">세현 시네마 앱에서는<br><strong>다양한 혜택을 드리고 있어요</strong></p>
+        <div class="popup-benefits">
+          <div class="benefit-item"><i class="fa-solid fa-ticket"></i> VIP 무료 관람권 제공</div>
+          <div class="benefit-item"><i class="fa-solid fa-percent"></i> 매점 할인권 증정</div>
+          <div class="benefit-item"><i class="fa-solid fa-gift"></i> 생일 스위트 콤보 자동 지급</div>
+        </div>
+        <div class="popup-qr">
+          <div class="qr-placeholder">
+            <i class="fa-solid fa-qrcode"></i>
+            <p>앱 다운로드</p>
+          </div>
+          <p class="qr-desc">QR 코드를 스캔하여<br>앱을 다운로드 하세요</p>
+        </div>
+      </div>
+      <div class="popup-footer">
+        <label class="popup-no-today">
+          <input type="checkbox" id="popup-no-today-check" />
+          오늘 하루 보지 않기
+        </label>
+        <button class="btn-popup-close" id="popup-close-btn">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header id="main-header" class="main-header">
+    <!-- 상단 유틸 바 -->
+    <div class="header-util">
+      <div class="container-xl d-flex justify-content-between align-items-center">
+        <div class="header-sns">
+          <a href="#" aria-label="유튜브" class="sns-link"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="페이스북" class="sns-link"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="인스타그램" class="sns-link"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+        <div class="header-util-links">
+          <a href="#">멤버십</a>
+          <a href="#">고객센터</a>
+          <a href="#">단체관/대관문의</a>
+          <a href="#" class="btn-login">로그인</a>
+          <a href="#" class="btn-join">회원가입</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로고 + 네비게이션 -->
+    <div class="header-nav-wrap">
+      <div class="container-xl d-flex justify-content-between align-items-center">
+        <!-- 로고 -->
+        <a href="#" class="header-logo">
+          <span class="logo-main">SEHYUN</span>
+          <span class="logo-sub">CINEMA</span>
+        </a>
+
+        <!-- 모바일 토글 -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="메뉴 열기">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- GNB 네비 -->
+        <nav class="gnb" id="gnb">
+          <ul class="gnb-list">
+            <li class="gnb-item has-dropdown">
+              <a href="#" class="gnb-link">예매</a>
+              <ul class="gnb-dropdown">
+                <li><a href="#">예매하기</a></li>
+                <li><a href="#">상영시간표</a></li>
+                <li><a href="#">할인안내</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a href="#" class="gnb-link">영화</a>
+              <ul class="gnb-dropdown">
+                <li><a href="#">현재상영작</a></li>
+                <li><a href="#">개봉예정작</a></li>
+                <li><a href="#">아르떼(Arte)</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a href="#" class="gnb-link">영화관</a>
+              <ul class="gnb-dropdown">
+                <li><a href="#">서울</a></li>
+                <li><a href="#">경기/인천</a></li>
+                <li><a href="#">스페셜관</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a href="#" class="gnb-link">멤버십</a>
+              <ul class="gnb-dropdown">
+                <li><a href="#">VIP ZONE</a></li>
+                <li><a href="#">틴틴클럽</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a href="#" class="gnb-link">고객센터</a>
+              <ul class="gnb-dropdown">
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">공지사항</a></li>
+                <li><a href="#">1:1 문의</a></li>
+                <li><a href="#">AI 상담톡</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HERO BANNER ===== -->
+  <section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-sub">2026 SEHYUN CINEMA</p>
+      <h1 class="hero-title">세현 시네마 앱에서는<br>다양한 혜택을 드리고 있어요</h1>
+      <p class="hero-desc">VIP · VVIP · LVIP 등급 멤버십으로 더 특별한 영화 경험을</p>
+      <div class="hero-btns">
+        <a href="#movies" class="btn-hero-primary">지금 예매하기</a>
+        <a href="#" class="btn-hero-secondary">앱 다운로드</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <i class="fa-solid fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ===== SEARCH BAR ===== -->
+  <section class="search-section" id="movies">
+    <div class="container-xl">
+      <div class="search-wrap">
+        <input type="text" id="movie-search" class="search-input" placeholder="영화 제목을 검색하세요..." autocomplete="off" />
+        <button class="search-btn" aria-label="검색">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TOP 10 영화 섹션 ===== -->
+  <section class="movies-section">
+    <div class="container-xl">
+      <div class="section-header">
+        <h2 class="section-title"><span class="accent">TOP 10</span> 영화</h2>
+        <p class="section-desc">지금 가장 인기 있는 영화를 만나보세요</p>
+      </div>
+      <div class="movies-grid" id="movies-grid">
+        <!-- JS로 렌더링 -->
+      </div>
+      <div class="load-more-wrap">
+        <button class="btn-load-more" id="load-more-btn">
+          더보기 <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <p class="load-more-info" id="load-more-info"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 스페셜관 안내 ===== -->
+  <section class="special-section">
+    <div class="container-xl">
+      <div class="section-header">
+        <h2 class="section-title">스페셜관 안내</h2>
+        <p class="section-desc">특별한 상영 포맷으로 더욱 생생한 경험을</p>
+      </div>
+      <div class="special-grid">
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-film"></i></div>
+          <h3>IMAX</h3>
+          <p>초대형 화면과 입체 음향으로 압도적인 몰입감을 경험하세요</p>
+          <span class="special-badge">+4,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-wind"></i></div>
+          <h3>4DX</h3>
+          <p>움직이는 좌석, 바람·물·향기 등 특수효과로 영화 속으로</p>
+          <span class="special-badge">+5,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-expand"></i></div>
+          <h3>수퍼플렉스</h3>
+          <p>초대형 스크린과 최고급 음향 시스템의 프리미엄 관람</p>
+          <span class="special-badge">+3,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-star"></i></div>
+          <h3>샤롯데</h3>
+          <p>최상위 럭셔리 관람 환경, 프라이빗 좌석과 전용 서비스</p>
+          <span class="special-badge">+8,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-couch"></i></div>
+          <h3>리클라이너</h3>
+          <p>완전 리클라이닝 좌석으로 최고의 편안함을 즐기세요</p>
+          <span class="special-badge">+2,000원</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VIP 멤버십 배너 ===== -->
+  <section class="membership-section">
+    <div class="container-xl">
+      <div class="section-header">
+        <h2 class="section-title">VIP 멤버십 혜택</h2>
+        <p class="section-desc">2026년 기준 등급별 혜택을 확인하세요</p>
+      </div>
+      <div class="membership-grid">
+        <div class="membership-card vip">
+          <div class="membership-crown"><i class="fa-solid fa-crown"></i></div>
+          <h3 class="membership-grade">VIP</h3>
+          <p class="membership-condition">연 260,000원 이상 결제</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 주중 무료 관람권 2매</li>
+            <li><i class="fa-solid fa-check"></i> 매점 할인권 4매</li>
+            <li><i class="fa-solid fa-check"></i> 생일 스위트 콤보</li>
+          </ul>
+          <a href="#" class="btn-membership">혜택 더보기</a>
+        </div>
+        <div class="membership-card vvip">
+          <div class="membership-crown"><i class="fa-solid fa-crown"></i></div>
+          <h3 class="membership-grade">VVIP</h3>
+          <p class="membership-condition">연 300,000원 이상 결제</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 주중·주말 무료 관람권 4매</li>
+            <li><i class="fa-solid fa-check"></i> 매점 할인권 6매</li>
+            <li><i class="fa-solid fa-check"></i> 생일 스위트 콤보 + 추가 혜택</li>
+          </ul>
+          <a href="#" class="btn-membership">혜택 더보기</a>
+        </div>
+        <div class="membership-card lvip">
+          <div class="membership-crown"><i class="fa-solid fa-crown"></i></div>
+          <h3 class="membership-grade">LVIP</h3>
+          <p class="membership-condition">연 360,000원 이상 결제</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 스페셜관 포함 무료 관람권 6매</li>
+            <li><i class="fa-solid fa-check"></i> 매점 무제한 할인권</li>
+            <li><i class="fa-solid fa-check"></i> 제휴 혜택 (렌터카·마트 등)</li>
+          </ul>
+          <a href="#" class="btn-membership">혜택 더보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="main-footer">
+    <div class="container-xl">
+      <div class="footer-top">
+        <div class="footer-logo-area">
+          <div class="footer-logo">
+            <span class="footer-logo-main">SEHYUN</span>
+            <span class="footer-logo-sub">CINEMA</span>
+          </div>
+          <div class="footer-family-badge">
+            <i class="fa-solid fa-heart"></i>
+            <span>가족친화 인증기업</span>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-link-group">
+            <strong>서비스</strong>
+            <a href="#">영화 예매</a>
+            <a href="#">상영시간표</a>
+            <a href="#">VIP 멤버십</a>
+          </div>
+          <div class="footer-link-group">
+            <strong>고객지원</strong>
+            <a href="#">FAQ</a>
+            <a href="#">공지사항</a>
+            <a href="#">1:1 문의</a>
+          </div>
+          <div class="footer-link-group">
+            <strong>회사 정보</strong>
+            <a href="#">이용약관</a>
+            <a href="#">개인정보처리방침</a>
+            <a href="#">단체관/대관문의</a>
+          </div>
+        </div>
+      </div>
+      <hr class="footer-divider" />
+      <div class="footer-bottom">
+        <div class="footer-info">
+          <p><strong>세현시네마(주)</strong> | 대표이사 : 김세현</p>
+          <p>경기도 안양시 동안구 부림로 55 309동 6층 3호</p>
+          <p>전화 : 010-3331-0292 &nbsp;|&nbsp; 이메일 : lms990302@naver.com</p>
+        </div>
+        <p class="footer-copyright">Copyright &copy; Sehyun movie. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
