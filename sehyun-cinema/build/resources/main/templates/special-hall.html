@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('스페셜관 안내')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding:0 0 80px;">
+  <section style="background:linear-gradient(135deg,#0d0d1a 0%,#1a1a3e 50%,#0d0d1a 100%); padding:56px 20px 40px; text-align:center;">
+    <p style="color:var(--lotte-red); letter-spacing:4px; font-size:.75rem; margin-bottom:10px;">SPECIAL THEATER</p>
+    <h1 style="font-size:2rem; font-weight:900; color:var(--text-primary); margin-bottom:12px;">스페셜관 안내</h1>
+    <p style="color:var(--text-muted); font-size:.95rem; max-width:640px; margin:0 auto; line-height:1.65;">
+      IMAX·4DX 등 <strong style="color:var(--text-primary);">상영 형식·시설</strong>을 설명합니다.<br/>
+      <strong style="color:var(--gold);">VIP 등급·할인·관람권</strong>은 <a th:href="@{/membership}" style="color:var(--gold); text-decoration:underline;">멤버십 · 할인 안내</a> 페이지를 이용해 주세요.
+    </p>
+  </section>
+
+  <div class="container-xl" style="padding-top:48px;">
+    <section class="special-section" style="padding:0;">
+      <div class="section-header">
+        <h2 class="section-title">상영관 유형</h2>
+        <p class="section-desc">일반관 외 특별 포맷별 추가 요금(예시)과 특징입니다. 지점·작품에 따라 상영 관·가격이 다를 수 있습니다.</p>
+      </div>
+      <div class="special-grid">
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-film"></i></div>
+          <h3>IMAX</h3>
+          <p>초대형 화면과 입체 음향으로 압도적인 몰입감을 경험하세요.</p>
+          <span class="special-badge">+4,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-wind"></i></div>
+          <h3>4DX</h3>
+          <p>움직이는 좌석, 바람·물·향기 등 특수효과로 영화 속으로 빠져듭니다.</p>
+          <span class="special-badge">+5,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-expand"></i></div>
+          <h3>수퍼플렉스</h3>
+          <p>초대형 스크린과 최고급 음향 시스템의 프리미엄 관람.</p>
+          <span class="special-badge">+3,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-star"></i></div>
+          <h3>샤롯데</h3>
+          <p>최상위 럭셔리 관람 환경, 프라이빗 좌석과 전용 서비스.</p>
+          <span class="special-badge">+8,000원</span>
+        </div>
+        <div class="special-card">
+          <div class="special-icon"><i class="fa-solid fa-couch"></i></div>
+          <h3>리클라이너</h3>
+          <p>완전 리클라이닝 좌석으로 편안한 관람.</p>
+          <span class="special-badge">+2,000원</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:48px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:28px 32px;">
+      <h2 style="color:var(--gold); font-size:1.05rem; font-weight:800; margin-bottom:16px;">
+        <i class="fa-solid fa-circle-info" style="margin-right:8px;"></i>예매·시간표에서 확인하기
+      </h2>
+      <p style="color:var(--text-muted); font-size:.9rem; line-height:1.75; margin:0 0 16px;">
+        예매 시 <strong style="color:var(--text-primary);">상영관 유형</strong>을 선택하면 해당 스페셜관 요금이 반영됩니다.
+        <a th:href="@{/schedule}" style="color:var(--gold); font-weight:700;">상영시간표</a>에서는 지역·관별로 상영작과 ⓘ 설명을 함께 볼 수 있습니다.
+      </p>
+      <div style="display:flex; flex-wrap:wrap; gap:12px;">
+        <a th:href="@{/booking}" class="btn-hero-primary" style="padding:10px 22px; font-size:.9rem;">예매하기</a>
+        <a th:href="@{/schedule}" class="btn-hero-secondary" style="padding:10px 22px; font-size:.9rem;">상영시간표</a>
+      </div>
+    </section>
+
+    <p style="text-align:center; margin-top:36px; font-size:.85rem; color:rgba(255,255,255,.45);">
+      제휴 카드 할인·VIP 라운지·등급 혜택은 <a th:href="@{/membership}" style="color:var(--gold);">멤버십 · 할인 안내</a>에서 안내합니다.
+    </p>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+</body>
+</html>
