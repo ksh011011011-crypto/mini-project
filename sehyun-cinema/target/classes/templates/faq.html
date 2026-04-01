@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('FAQ')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding:50px 0 80px;">
+  <div class="container-xl">
+    <div style="margin-bottom:32px;">
+      <h1 style="font-size:1.8rem; font-weight:900; color:var(--text-primary); margin-bottom:8px;">고객센터</h1>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;">
+        <a th:href="@{/customer/faq}" class="cs-tab active">FAQ</a>
+        <a th:href="@{/customer/notice}" class="cs-tab">공지사항</a>
+        <a th:href="@{/customer/inquiry}" class="cs-tab">1:1 문의</a>
+        <a th:href="@{/customer/chat}" class="cs-tab">AI 상담톡</a>
+        <a th:href="@{/customer/group}" class="cs-tab">단체관/대관문의</a>
+      </div>
+    </div>
+
+    <!-- FAQ 카테고리 탭 -->
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+      <th:block th:each="cat : ${ {'영화관 이용','스페셜관','L.POINT','회원','멤버십','온라인','할인혜택','관람권','스토어'} }">
+        <a th:href="@{/customer/faq(category=${cat})}"
+           th:class="${category == cat} ? 'faq-cat-btn active' : 'faq-cat-btn'"
+           th:text="${cat}"></a>
+      </th:block>
+    </div>
+
+    <!-- 검색 박스 -->
+    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:20px; margin-bottom:28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <form th:action="@{/customer/faq}" method="get" style="display:flex; gap:8px; flex:1; max-width:500px;">
+        <input type="hidden" name="category" th:value="${category}"/>
+        <input type="text" name="keyword" th:value="${keyword}" class="search-input"
+               placeholder="검색어를 입력해주세요" style="flex:1;"/>
+        <button type="submit" class="search-btn" style="border-radius:8px; padding:0 20px;">검색</button>
+      </form>
+      <div style="font-size:.78rem; color:var(--text-muted); text-align:right; line-height:1.8;">
+        더 궁금한 점이 있거나, 이미 문의한 내용과 답변을 확인하려면?<br>
+        <a th:href="@{/customer/inquiry}" style="color:var(--gold);">1:1 문의 바로가기</a> &nbsp;|&nbsp;
+        <a th:href="@{/customer/inquiry/my}" style="color:var(--gold);">MY 문의내역 바로가기</a>
+      </div>
+    </div>
+
+    <!-- FAQ 목록 (아코디언) -->
+    <div style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,255,255,.06); overflow:hidden;">
+      <div style="display:flex; padding:12px 20px; background:rgba(255,255,255,.04); font-size:.78rem; font-weight:700; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,.06);">
+        <span style="width:100px;">구분</span>
+        <span>질문</span>
+      </div>
+
+      <div th:if="${faqs.content.empty}" style="padding:40px; text-align:center; color:var(--text-muted);">
+        검색 결과가 없습니다.
+      </div>
+
+      <div th:each="faq, stat : ${faqs.content}">
+        <div class="faq-item" th:id="'faq-' + ${faq.id}">
+          <button class="faq-question" th:onclick="'toggleFAQ(' + ${faq.id} + ')'">
+            <span style="width:100px; flex-shrink:0; color:var(--text-muted); font-size:.82rem;" th:text="${faq.category}"></span>
+            <span style="flex:1; text-align:left; color:var(--text-primary); font-size:.9rem;">
+              Q. <span th:text="${faq.question}"></span>
+            </span>
+            <i class="fa-solid fa-chevron-down" th:id="'icon-' + ${faq.id}" style="transition:transform .3s; color:var(--text-muted);"></i>
+          </button>
+          <div class="faq-answer" th:id="'answer-' + ${faq.id}" style="display:none;">
+            <div style="padding:16px 20px 16px 120px; color:var(--text-light); font-size:.88rem; line-height:1.8; white-space:pre-wrap; border-top:1px solid rgba(255,255,255,.04);"
+                 th:text="${faq.answer}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 페이지네이션 -->
+    <div style="display:flex; justify-content:center; gap:6px; margin-top:24px;">
+      <th:block th:each="i : ${#numbers.sequence(0, faqs.totalPages - 1)}">
+        <a th:href="@{/customer/faq(category=${category},page=${i})}"
+           th:class="${i == currentPage} ? 'page-btn active' : 'page-btn'"
+           th:text="${i + 1}"></a>
+      </th:block>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+
+<script>
+function toggleFAQ(id) {
+  const answer = document.getElementById('answer-' + id);
+  const icon = document.getElementById('icon-' + id);
+  const isOpen = answer.style.display !== 'none';
+  answer.style.display = isOpen ? 'none' : 'block';
+  icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+  icon.style.color = isOpen ? '' : 'var(--gold)';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>세현시네마 PRD 발표 - 2026</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#e4b400; --dark:#0a0a1a; --card:#12122a;
+  --text:#f0f0ff; --muted:#8888aa;
+}
+body{background:var(--dark);color:var(--text);font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;overflow:hidden;}
+
+/* 슬라이드 레이아웃 */
+.slide{
+  width:100vw;height:100vh;
+  display:none;flex-direction:column;justify-content:center;align-items:center;
+  padding:60px;position:relative;overflow:hidden;
+}
+.slide.active{display:flex;}
+
+/* 배경 장식 */
+.slide::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 70% 50% at 20% 20%,rgba(228,180,0,.06),transparent),
+             radial-gradient(ellipse 60% 60% at 80% 80%,rgba(100,60,180,.06),transparent);
+  pointer-events:none;
+}
+
+/* 네비게이션 */
+.nav{
+  position:fixed;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;gap:14px;align-items:center;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(12px);
+  padding:12px 24px;border-radius:40px;border:1px solid rgba(255,255,255,.1);
+  z-index:100;
+}
+.nav-btn{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:1.1rem;padding:6px 12px;border-radius:8px;transition:all .2s;
+}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.slide-counter{font-size:.82rem;color:var(--muted);min-width:60px;text-align:center;}
+.dot-nav{display:flex;gap:6px;align-items:center;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .2s;}
+.dot.active{background:var(--gold);width:20px;border-radius:3px;}
+
+/* 슬라이드 번호 */
+.slide-num{
+  position:absolute;top:28px;right:36px;
+  font-size:.72rem;color:var(--muted);letter-spacing:1px;
+}
+
+/* 타이포 */
+.kicker{font-size:.75rem;letter-spacing:4px;color:var(--gold);margin-bottom:16px;text-transform:uppercase;}
+.title{font-size:3rem;font-weight:900;line-height:1.15;margin-bottom:20px;}
+.subtitle{font-size:1.1rem;color:var(--muted);line-height:1.7;}
+.gold{color:var(--gold);}
+.accent{background:linear-gradient(90deg,var(--gold),#fff8b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* 카드 그리드 */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:1000px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;width:100%;max-width:1100px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;max-width:1100px;}
+
+.card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:28px;
+}
+.card-gold{border-color:rgba(228,180,0,.3);background:rgba(228,180,0,.04);}
+.card h3{font-size:1rem;font-weight:800;margin-bottom:10px;color:var(--gold);}
+.card p,.card li{font-size:.85rem;color:var(--muted);line-height:1.7;}
+.card ul{list-style:none;padding:0;}
+.card li::before{content:'✓ ';color:var(--gold);}
+
+/* 큰 수치 */
+.stat{text-align:center;}
+.stat-num{font-size:2.8rem;font-weight:900;color:var(--gold);display:block;line-height:1;}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:6px;}
+
+/* 태그 */
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;margin:3px;}
+.tag-gold{background:rgba(228,180,0,.15);color:var(--gold);border:1px solid rgba(228,180,0,.3);}
+.tag-blue{background:rgba(100,120,255,.15);color:#8899ff;border:1px solid rgba(100,120,255,.3);}
+.tag-green{background:rgba(76,175,80,.15);color:#66bb6a;border:1px solid rgba(76,175,80,.3);}
+.tag-red{background:rgba(244,67,54,.12);color:#ef5350;border:1px solid rgba(244,67,54,.2);}
+
+/* 단계 */
+.steps{display:flex;gap:0;align-items:center;width:100%;max-width:900px;}
+.step{
+  flex:1;text-align:center;padding:20px 16px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+}
+.step:first-child{border-radius:12px 0 0 12px;}
+.step:last-child{border-radius:0 12px 12px 0;}
+.step-num{font-size:1.6rem;font-weight:900;color:var(--gold);}
+.step-title{font-size:.8rem;font-weight:700;color:var(--text);margin-top:4px;}
+.step-desc{font-size:.72rem;color:var(--muted);margin-top:4px;}
+
+/* 구분선 */
+.divider{width:60px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:16px 0;}
+
+/* 등급 카드 */
+.grade-card{border-radius:14px;padding:24px;text-align:center;}
+.grade-vip{background:linear-gradient(135deg,#2a1f0a,#5a3d10);border:1px solid rgba(240,192,96,.3);}
+.grade-vvip{background:linear-gradient(135deg,#1a1530,#3a2860);border:1px solid rgba(228,180,0,.3);}
+.grade-lvip{
+  background:linear-gradient(135deg,#0a0a0a,#3a2d00);
+  border:2px solid var(--gold);
+  box-shadow:0 0 20px rgba(228,180,0,.3);
+}
+
+/* 기술 스택 뱃지 */
+.tech-badge{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  font-size:.82rem;font-weight:700;
+}
+.tech-badge i{font-size:1.1rem;}
+
+/* 슬라이드별 배경 */
+.slide-cover{background:linear-gradient(160deg,#050510,#0a0a1e,#0f0a00);}
+.slide-blue{background:linear-gradient(160deg,#050520,#0a0820,#050510);}
+.slide-warm{background:linear-gradient(160deg,#0f0800,#100a00,#0a0a1a);}
+
+/* 애니메이션 */
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.slide.active > *{animation:fadeIn .5s ease forwards;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 1: 표지 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide slide-cover active" id="slide-1">
+  <div class="slide-num">01 / 12</div>
+  <div style="text-align:center; position:relative; z-index:2;">
+    <div style="font-size:4.5rem; font-weight:900; letter-spacing:8px; line-height:1; margin-bottom:8px;">
+      <span class="accent">SEHYUN</span>
+    </div>
+    <div style="font-size:2rem; font-weight:300; letter-spacing:12px; color:rgba(228,180,0,.7); margin-bottom:32px;">CINEMA</div>
+    <div style="width:80px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:0 auto 32px;"></div>
+    <p style="font-size:1.1rem; color:var(--muted); letter-spacing:1px; margin-bottom:8px;">PRD 서비스 기획 및 개발 발표</p>
+    <p style="font-size:.85rem; color:rgba(228,180,0,.5); letter-spacing:2px;">2026 · 김세현 · Spring Boot 3.4.4</p>
+
+    <div style="display:flex; gap:16px; justify-content:center; margin-top:48px; flex-wrap:wrap;">
+      <span class="tag tag-gold"><i class="fa-brands fa-java" style="margin-right:4px;"></i>Java 21</span>
+      <span class="tag tag-blue">Spring Boot 3.4</span>
+      <span class="tag tag-green">PostgreSQL</span>
+      <span class="tag tag-gold">Thymeleaf</span>
+      <span class="tag tag-blue">Spring Security</span>
+    </div>
+  </div>
+
+  <!-- 배경 포스터들 -->
+  <div style="position:absolute; bottom:80px; left:50%; transform:translateX(-50%); display:flex; gap:12px; opacity:.15; pointer-events:none;">
+    <img src="https://image.tmdb.org/t/p/w500/zEH1FQTEnRY05i8gQIYdR10Vp92.jpg" style="height:140px; border-radius:8px;"/>
+    <img src="https://image.tmdb.org/t/p/w500/qqGpVVZk2KD1lAvccgTU4Z6nh1H.jpg" style="height:140px; border-radius:8px;"/>
+    <img src="/images/posters/pamyo.png" style="height:140px; border-radius:8px;"/>
+    <img src="/images/posters/crime-city-4.png" style="height:140px; border-radius:8px;"/>
+    <img src="https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg" style="height:140px; border-radius:8px;"/>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 2: 프로젝트 개요 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-2">
+  <div class="slide-num">02 / 12</div>
+  <div style="width:100%; max-width:1000px;">
+    <div class="kicker">Project Overview</div>
+    <h1 class="title">세현시네마 <span class="gold">서비스 개요</span></h1>
+    <div class="grid-2" style="margin-top:32px;">
+      <div>
+        <div class="card card-gold" style="margin-bottom:20px;">
+          <h3><i class="fa-solid fa-bullseye" style="margin-right:8px;"></i>프로젝트 목표</h3>
+          <ul>
+            <li>직관적인 영화 예매 시스템 구축</li>
+            <li>VIP 멤버십 등급 및 혜택 관리</li>
+            <li>AI 상담톡 · 자동예매 기능</li>
+            <li>실시간 박스오피스 연동</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-user" style="margin-right:8px;"></i>대표 정보</h3>
+          <ul>
+            <li>대표이사: 김세현</li>
+            <li>연락처: 010-3331-0292</li>
+            <li>이메일: lms990302@naver.com</li>
+            <li>슬로건: 다양한 혜택을 드리고 있어요</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="height:100%;">
+          <h3><i class="fa-solid fa-layer-group" style="margin-right:8px;"></i>기술 스택</h3>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+            <div class="tech-badge" style="color:#f89820;"><i class="fa-brands fa-java"></i>Java 21 · Spring Boot 3.4.4</div>
+            <div class="tech-badge" style="color:#6db33f;"><i class="fa-solid fa-leaf"></i>Spring Data JPA · Spring Security 6</div>
+            <div class="tech-badge" style="color:#336791;"><i class="fa-solid fa-database"></i>PostgreSQL (Supabase)</div>
+            <div class="tech-badge" style="color:#e4b400;"><i class="fa-solid fa-code"></i>Thymeleaf · Bootstrap 5 · JS ES6</div>
+            <div class="tech-badge" style="color:#ff9800;"><i class="fa-solid fa-shield-halved"></i>OAuth2 (카카오 소셜 로그인)</div>
+            <div class="tech-badge" style="color:#4caf50;"><i class="fa-brands fa-gradle"></i>Gradle · DevTools · Lombok</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 3: 주요 기능 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-3">
+  <div class="slide-num">03 / 12</div>
+  <div style="width:100%; max-width:1100px;">
+    <div class="kicker">Core Features</div>
+    <h1 class="title">핵심 <span class="gold">기능 목록</span></h1>
+    <div class="grid-3" style="margin-top:32px;">
+      <div class="card">
+        <h3><i class="fa-solid fa-ticket" style="margin-right:8px;"></i>예매 시스템</h3>
+        <ul>
+          <li>3단계 예매 플로우</li>
+          <li>6가지 상영관 선택</li>
+          <li>좌석 시각적 선택</li>
+          <li>가상카드 결제</li>
+          <li>쿠폰 즉시 적용</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-film" style="margin-right:8px;"></i>영화 서비스</h3>
+        <ul>
+          <li>2026 박스오피스 TOP10</li>
+          <li>TMDB 포스터 연동</li>
+          <li>현재상영·개봉예정·아르떼</li>
+          <li>하트(찜) 기능</li>
+          <li>영화 검색</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-crown" style="margin-right:8px;"></i>VIP 멤버십</h3>
+        <ul>
+          <li>4단계 등급 자동 산정</li>
+          <li>LVIP 프리미엄 혜택</li>
+          <li>등급별 무료 관람권</li>
+          <li>카드 추가 할인</li>
+          <li>생일 쿠폰 자동 발급</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-robot" style="margin-right:8px;"></i>AI 상담톡</h3>
+        <ul>
+          <li>규칙 기반 AI 응답</li>
+          <li>자동예매 지원</li>
+          <li>욕설 필터링 (3회 차단)</li>
+          <li>비활동 타임아웃</li>
+          <li>빠른 버튼 메뉴</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-clock" style="margin-right:8px;"></i>상영시간표</h3>
+        <ul>
+          <li>지역별 4개 극장</li>
+          <li>날짜별 7일 탭</li>
+          <li>상영관별 잔여석</li>
+          <li>클릭 → 바로 예매</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-headset" style="margin-right:8px;"></i>고객센터</h3>
+        <ul>
+          <li>FAQ 12개 카테고리</li>
+          <li>공지사항 관리</li>
+          <li>1:1 문의</li>
+          <li>단체·대관 문의</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 4: 예매 플로우 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-4">
+  <div class="slide-num">04 / 12</div>
+  <div style="width:100%; max-width:1000px; text-align:center;">
+    <div class="kicker">Booking Flow</div>
+    <h1 class="title">3단계 <span class="gold">예매 프로세스</span></h1>
+    <div class="steps" style="margin-top:40px;">
+      <div class="step">
+        <div class="step-num">①</div>
+        <div class="step-title">영화 · 상영관 선택</div>
+        <div class="step-desc">포스터 미리보기<br>6가지 상영관<br>날짜·시간 선택</div>
+      </div>
+      <div style="color:var(--gold); font-size:1.5rem; padding:0 4px;">›</div>
+      <div class="step">
+        <div class="step-num">②</div>
+        <div class="step-title">인원 · 좌석 선택</div>
+        <div class="step-desc">성인/청소년 구분<br>시각적 좌석 맵<br>D~L열 14자리</div>
+      </div>
+      <div style="color:var(--gold); font-size:1.5rem; padding:0 4px;">›</div>
+      <div class="step">
+        <div class="step-num">③</div>
+        <div class="step-title">쿠폰 · 결제</div>
+        <div class="step-desc">4종 쿠폰 선택<br>6개 가상카드<br>간편결제 지원</div>
+      </div>
+      <div style="color:var(--gold); font-size:1.5rem; padding:0 4px;">›</div>
+      <div class="step" style="background:rgba(228,180,0,.08); border-color:rgba(228,180,0,.3);">
+        <div class="step-num">✓</div>
+        <div class="step-title">예매 완료!</div>
+        <div class="step-desc">예매번호 발급<br>포스터 확인<br>내역 저장</div>
+      </div>
+    </div>
+
+    <div class="grid-4" style="margin-top:32px;">
+      <div class="stat">
+        <span class="stat-num">6</span>
+        <div class="stat-label">상영관 종류<br>(일반/IMAX/4DX 등)</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">6</span>
+        <div class="stat-label">가상카드<br>(최대 15% 할인)</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">4</span>
+        <div class="stat-label">쿠폰 종류<br>(최대 14,000원)</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">126</span>
+        <div class="stat-label">선택 가능 좌석<br>(9열 × 14번)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 5: VIP 멤버십 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide slide-warm" id="slide-5">
+  <div class="slide-num">05 / 12</div>
+  <div style="width:100%; max-width:1000px;">
+    <div class="kicker">Membership System</div>
+    <h1 class="title">VIP <span class="gold">멤버십 등급</span></h1>
+    <div class="grid-4" style="margin-top:36px;">
+      <div class="card" style="text-align:center;">
+        <i class="fa-solid fa-user" style="font-size:1.8rem; color:var(--muted); margin-bottom:12px; display:block;"></i>
+        <h3 style="color:var(--muted);">일반</h3>
+        <p style="margin-top:8px;">26만원 미만<br>기본 서비스</p>
+      </div>
+      <div class="grade-card grade-vip">
+        <i class="fa-solid fa-crown" style="font-size:1.8rem; color:#f0c060; margin-bottom:12px; display:block;"></i>
+        <div style="font-size:1.3rem; font-weight:900; color:#f0c060; margin-bottom:8px;">VIP</div>
+        <p style="font-size:.78rem; color:rgba(255,255,255,.6);">연 26만원 이상<br>무료 관람권 2매<br>매점 4% 할인</p>
+      </div>
+      <div class="grade-card grade-vvip">
+        <i class="fa-solid fa-crown" style="font-size:1.8rem; color:var(--gold); margin-bottom:12px; display:block;"></i>
+        <div style="font-size:1.3rem; font-weight:900; color:var(--gold); margin-bottom:8px;">VVIP</div>
+        <p style="font-size:.78rem; color:rgba(255,255,255,.6);">연 30만원 이상<br>무료 관람권 4매<br>매점 6% 할인</p>
+      </div>
+      <div class="grade-card grade-lvip">
+        <i class="fa-solid fa-crown" style="font-size:1.8rem; color:#ffe066; margin-bottom:12px; display:block; animation:pulse 2s infinite;"></i>
+        <div style="font-size:1.3rem; font-weight:900; color:#ffe066; margin-bottom:8px;">LVIP</div>
+        <p style="font-size:.78rem; color:rgba(255,255,255,.6);">연 36만원 이상<br>무료 관람권 6매<br>무제한 할인</p>
+      </div>
+    </div>
+    <div style="margin-top:28px; text-align:center;">
+      <span class="tag tag-gold">관람일 2~3일 후 자동 반영</span>
+      <span class="tag tag-gold">1일 최대 3건 인정</span>
+      <span class="tag tag-gold">매점 금액 제외</span>
+      <span class="tag tag-blue">생일 쿠폰 자동 발급</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 6: 가상카드 결제 시스템 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-6">
+  <div class="slide-num">06 / 12</div>
+  <div style="width:100%; max-width:1000px;">
+    <div class="kicker">Virtual Card Payment</div>
+    <h1 class="title">가상카드 <span class="gold">결제 시스템</span></h1>
+    <div class="grid-3" style="margin-top:32px;">
+      <div style="background:linear-gradient(135deg,#1a1a3e,#1a1a5e); border-radius:14px; padding:20px; border:1px solid rgba(100,100,255,.3);">
+        <div style="font-size:.7rem; color:rgba(255,255,255,.5); margin-bottom:8px;">💳 현대카드 M</div>
+        <div style="font-size:.78rem; letter-spacing:3px; color:rgba(255,255,255,.6);">5182-****-****-7890</div>
+        <div style="margin-top:12px; font-size:.75rem; background:rgba(255,255,255,.1); display:inline-block; padding:3px 10px; border-radius:10px; color:#fff;">M포인트 <strong>10% 할인</strong></div>
+      </div>
+      <div style="background:linear-gradient(135deg,#001a40,#003080); border-radius:14px; padding:20px; border:1px solid rgba(0,80,160,.5);">
+        <div style="font-size:.7rem; color:rgba(255,255,255,.5); margin-bottom:8px;">💳 신한카드 Deep Dream</div>
+        <div style="font-size:.78rem; letter-spacing:3px; color:rgba(255,255,255,.6);">4012-****-****-1881</div>
+        <div style="margin-top:12px; font-size:.75rem; background:rgba(255,255,255,.1); display:inline-block; padding:3px 10px; border-radius:10px; color:#fff;"><strong>7% 즉시할인</strong></div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1a1400,#3a2d00); border-radius:14px; padding:20px; border:2px solid rgba(228,180,0,.5); box-shadow:0 0 20px rgba(228,180,0,.2);">
+        <div style="font-size:.7rem; color:rgba(255,230,100,.7); margin-bottom:8px;">🎬 세현시네마 카드</div>
+        <div style="font-size:.78rem; letter-spacing:3px; color:rgba(255,230,100,.7);">6789-****-****-8901</div>
+        <div style="margin-top:12px; font-size:.75rem; background:rgba(228,180,0,.2); display:inline-block; padding:3px 10px; border-radius:10px; color:#ffe066;">LVIP 전용 <strong>15% 할인</strong></div>
+      </div>
+    </div>
+    <div style="margin-top:24px; background:rgba(228,180,0,.05); border:1px solid rgba(228,180,0,.2); border-radius:12px; padding:20px 28px;">
+      <p style="font-size:.88rem; color:var(--muted); line-height:1.7;">
+        <i class="fa-solid fa-circle-info" style="color:var(--gold); margin-right:8px;"></i>
+        <strong style="color:var(--text);">할인 적용 방식:</strong>
+        카드 할인 → 쿠폰 할인 순으로 중복 적용됩니다.
+        세현시네마 카드(LVIP 전용)는 최대 15% 즉시 할인으로 가장 높은 혜택을 제공합니다.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 7: AI 상담톡 + 자동예매 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide slide-blue" id="slide-7">
+  <div class="slide-num">07 / 12</div>
+  <div style="width:100%; max-width:1000px;">
+    <div class="kicker">AI Chatbot</div>
+    <h1 class="title">AI 상담톡 <span class="gold">자동예매 시스템</span></h1>
+    <div class="grid-2" style="margin-top:32px;">
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <h3><i class="fa-solid fa-robot" style="margin-right:8px;"></i>AI 상담톡 기능</h3>
+          <ul>
+            <li>규칙 기반 자연어 처리</li>
+            <li>욕설 필터링 (3회 → 자동 차단)</li>
+            <li>1분 비활동 자동 종료</li>
+            <li>빠른 버튼 메뉴 (4종)</li>
+            <li>타이핑 애니메이션 효과</li>
+          </ul>
+        </div>
+        <div class="card card-gold">
+          <h3><i class="fa-solid fa-magic-wand-sparkles" style="margin-right:8px;"></i>자동예매 플로우</h3>
+          <ul>
+            <li>영화명 언급 → 상세 정보 제공</li>
+            <li>"네" 입력 → 예매 페이지 이동</li>
+            <li>"자동예매" → 랜덤 좌석 예매</li>
+            <li>특정 영화 ID 직접 연결</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <!-- 채팅 미리보기 -->
+        <div style="background:#12122a; border-radius:16px; border:1px solid rgba(255,255,255,.08); padding:20px; height:100%;">
+          <div style="font-size:.78rem; color:var(--gold); margin-bottom:16px; font-weight:700;">💬 상담 예시</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="align-self:flex-end; background:var(--gold); color:#000; padding:8px 14px; border-radius:12px 12px 0 12px; font-size:.82rem; font-weight:600; max-width:80%;">왕과 사는 남자 예매하고 싶어요</div>
+            <div style="background:rgba(255,255,255,.06); padding:10px 14px; border-radius:12px 12px 12px 0; font-size:.78rem; color:var(--muted); max-width:90%;">👑 왕과 사는 남자<br>누적 1,561만 관객 | 12세이상 | 129분<br>예매하시겠습니까? '네' 입력</div>
+            <div style="align-self:flex-end; background:var(--gold); color:#000; padding:8px 14px; border-radius:12px 12px 0 12px; font-size:.82rem; font-weight:600;">네</div>
+            <div style="background:rgba(76,175,80,.1); border:1px solid rgba(76,175,80,.3); padding:10px 14px; border-radius:12px 12px 12px 0; font-size:.78rem; color:#66bb6a;">🎬 예매 페이지로 이동합니다!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 8: 데이터베이스 설계 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-8">
+  <div class="slide-num">08 / 12</div>
+  <div style="width:100%; max-width:1000px;">
+    <div class="kicker">Database Design</div>
+    <h1 class="title">ERD · <span class="gold">데이터베이스 설계</span></h1>
+    <div class="grid-3" style="margin-top:32px;">
+      <div class="card">
+        <h3><i class="fa-solid fa-users" style="margin-right:8px;"></i>members</h3>
+        <ul style="font-size:.78rem;">
+          <li>id, username, password</li>
+          <li>name, email, phone</li>
+          <li>grade (일반/VIP/VVIP/LVIP)</li>
+          <li>total_spent, role</li>
+          <li>birth_date, created_at</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-film" style="margin-right:8px;"></i>movies</h3>
+        <ul style="font-size:.78rem;">
+          <li>id, title, genre</li>
+          <li>poster_url, trailer_url</li>
+          <li>status (SHOWING/UPCOMING)</li>
+          <li>rating_avg, booking_rate</li>
+          <li>rank_position, age_rating</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-ticket" style="margin-right:8px;"></i>bookings</h3>
+        <ul style="font-size:.78rem;">
+          <li>id, member_id, movie_id</li>
+          <li>theater_type, seat_info</li>
+          <li>adult_count, teen_count</li>
+          <li>total_price, discount_amount</li>
+          <li>payment_method, status</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-star" style="margin-right:8px;"></i>movie_hearts</h3>
+        <ul style="font-size:.78rem;">
+          <li>id, member_id, movie_id</li>
+          <li>created_at</li>
+          <li>UNIQUE (member_id, movie_id)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-bell" style="margin-right:8px;"></i>notices + faqs</h3>
+        <ul style="font-size:.78rem;">
+          <li>id, title, content</li>
+          <li>category, is_important</li>
+          <li>view_count, created_at</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-comments" style="margin-right:8px;"></i>inquiries</h3>
+        <ul style="font-size:.78rem;">
+          <li>id, member_id</li>
+          <li>category, inquiry_type</li>
+          <li>title, content</li>
+          <li>email_notify, sms_notify</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 9: 보안 · 인증 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-9">
+  <div class="slide-num">09 / 12</div>
+  <div style="width:100%; max-width:900px;">
+    <div class="kicker">Security & Auth</div>
+    <h1 class="title">보안 · <span class="gold">인증 시스템</span></h1>
+    <div class="grid-2" style="margin-top:32px;">
+      <div>
+        <div class="card card-gold" style="margin-bottom:16px;">
+          <h3><i class="fa-solid fa-shield-halved" style="margin-right:8px;"></i>Spring Security 6</h3>
+          <ul>
+            <li>BCrypt 비밀번호 암호화</li>
+            <li>CSRF 보호 (세션 기반)</li>
+            <li>URL 접근 제어</li>
+            <li>CustomUserDetailsService</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-share-nodes" style="margin-right:8px;"></i>소셜 로그인 OAuth2</h3>
+          <ul>
+            <li>카카오 로그인 활성화</li>
+            <li>구글 로그인 (준비중)</li>
+            <li>네이버 로그인 (준비중)</li>
+            <li>SocialOAuth2UserService</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="display:flex; flex-direction:column; gap:12px;">
+        <h3><i class="fa-solid fa-key" style="margin-right:8px;"></i>계정 권한 체계</h3>
+        <div style="background:rgba(228,180,0,.06); border-radius:8px; padding:14px;">
+          <div style="font-size:.78rem; color:var(--gold); font-weight:700; margin-bottom:6px;">ROLE_ADMIN</div>
+          <p style="font-size:.78rem; color:var(--muted);">ksh011 (대표이사) · 관리자 계정 · LVIP 등급</p>
+        </div>
+        <div style="background:rgba(255,255,255,.04); border-radius:8px; padding:14px;">
+          <div style="font-size:.78rem; color:var(--muted); font-weight:700; margin-bottom:6px;">ROLE_USER</div>
+          <p style="font-size:.78rem; color:var(--muted);">일반 회원 · 예매·리뷰·찜 기능</p>
+        </div>
+        <div style="background:rgba(255,255,255,.02); border-radius:8px; padding:14px;">
+          <div style="font-size:.78rem; color:rgba(255,255,255,.3); font-weight:700; margin-bottom:6px;">Anonymous</div>
+          <p style="font-size:.78rem; color:var(--muted);">영화 조회·검색만 가능</p>
+        </div>
+        <div style="margin-top:auto; padding:12px; background:rgba(76,175,80,.06); border-radius:8px; border:1px solid rgba(76,175,80,.2);">
+          <p style="font-size:.8rem; color:#66bb6a;"><i class="fa-solid fa-circle-check" style="margin-right:6px;"></i>ksh011 / lms990302 항상 LVIP 보장</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 10: 상영시간표 · 극장 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-10">
+  <div class="slide-num">10 / 12</div>
+  <div style="width:100%; max-width:1000px; text-align:center;">
+    <div class="kicker">Theater & Schedule</div>
+    <h1 class="title">상영시간표 · <span class="gold">극장 정보</span></h1>
+    <div class="grid-4" style="margin-top:36px;">
+      <div class="card">
+        <h3 style="text-align:center;">📍 세현 강남</h3>
+        <ul>
+          <li>일반관 1관 (180석)</li>
+          <li>IMAX관 (250석)</li>
+          <li>4DX관 (120석)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="text-align:center;">📍 세현 홍대</h3>
+        <ul>
+          <li>일반관 1관 (160석)</li>
+          <li>일반관 2관 (160석)</li>
+          <li>수퍼플렉스관 (300석)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="text-align:center;">📍 세현 수원</h3>
+        <ul>
+          <li>일반관 1관 (180석)</li>
+          <li>일반관 2관 (180석)</li>
+          <li>4DX관 (120석)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="text-align:center;">📍 세현 부산</h3>
+        <ul>
+          <li>일반관 1관 (160석)</li>
+          <li>IMAX관 (250석)</li>
+          <li>리클라이너관 (80석)</li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex; gap:16px; justify-content:center; margin-top:28px; flex-wrap:wrap;">
+      <div class="stat"><span class="stat-num" style="font-size:2rem;">4</span><div class="stat-label">지역 극장</div></div>
+      <div class="stat"><span class="stat-num" style="font-size:2rem;">12</span><div class="stat-label">상영관</div></div>
+      <div class="stat"><span class="stat-num" style="font-size:2rem;">2,320</span><div class="stat-label">총 좌석 수</div></div>
+      <div class="stat"><span class="stat-num" style="font-size:2rem;">10</span><div class="stat-label">일별 상영 횟수</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 11: 2026 박스오피스 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide" id="slide-11">
+  <div class="slide-num">11 / 12</div>
+  <div style="width:100%; max-width:1000px;">
+    <div class="kicker">2026 Box Office</div>
+    <h1 class="title">2026 최신 <span class="gold">박스오피스 TOP 10</span></h1>
+    <div style="display:flex; gap:12px; margin-top:28px; overflow-x:auto; padding-bottom:8px;">
+      <div style="text-align:center; flex-shrink:0;">
+        <div style="position:relative; display:inline-block;">
+          <img src="https://image.tmdb.org/t/p/w500/zEH1FQTEnRY05i8gQIYdR10Vp92.jpg" style="width:90px; height:130px; object-fit:cover; border-radius:8px; border:2px solid var(--gold);" onerror="this.style.display='none'"/>
+          <div style="position:absolute; top:4px; left:4px; background:var(--gold); color:#000; font-weight:900; font-size:.7rem; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center;">1</div>
+        </div>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px; word-break:keep-all;">왕과 사는 남자</p>
+        <p style="font-size:.65rem; color:var(--gold);">1,561만</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <div style="position:relative; display:inline-block;">
+          <img src="https://image.tmdb.org/t/p/w500/qqGpVVZk2KD1lAvccgTU4Z6nh1H.jpg" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+          <div style="position:absolute; top:4px; left:4px; background:rgba(228,180,0,.7); color:#000; font-weight:900; font-size:.7rem; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center;">2</div>
+        </div>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px; word-break:keep-all;">프로젝트 헤일메리</p>
+        <p style="font-size:.65rem; color:var(--gold);">115만</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <img src="/images/posters/pamyo.png" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px;">파묘</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <img src="/images/posters/crime-city-4.png" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px;">범죄도시 4</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <img src="https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px;">기생충</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <img src="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px;">인터스텔라</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <img src="/images/posters/extreme-job.png" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px;">극한직업</p>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <img src="/images/posters/seoul-spring.png" style="width:90px; height:130px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'"/>
+        <p style="font-size:.72rem; margin-top:6px; color:var(--text); width:90px;">서울의 봄</p>
+      </div>
+    </div>
+    <div style="margin-top:20px; text-align:center;">
+      <span class="tag tag-gold">TMDB API 포스터 연동</span>
+      <span class="tag tag-green">서버 시작 시 자동 업데이트</span>
+      <span class="tag tag-blue">현재상영 · 개봉예정 · 아르떼 분류</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SLIDE 12: 마무리 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="slide slide-cover" id="slide-12">
+  <div class="slide-num">12 / 12</div>
+  <div style="text-align:center; position:relative; z-index:2; max-width:800px;">
+    <div class="kicker">Thank You</div>
+    <h1 class="title" style="font-size:2.6rem;">세현시네마로<br><span class="gold">최고의 경험</span>을 드립니다</h1>
+    <div class="divider" style="margin:24px auto;"></div>
+
+    <div class="grid-4" style="margin-top:28px;">
+      <div class="stat"><span class="stat-num">20+</span><div class="stat-label">등록 영화</div></div>
+      <div class="stat"><span class="stat-num">4</span><div class="stat-label">지역 극장</div></div>
+      <div class="stat"><span class="stat-num">6</span><div class="stat-label">가상카드 할인</div></div>
+      <div class="stat"><span class="stat-num">AI</span><div class="stat-label">자동예매</div></div>
+    </div>
+
+    <div style="margin-top:36px; padding:24px; background:rgba(228,180,0,.06); border:1px solid rgba(228,180,0,.2); border-radius:16px;">
+      <p style="font-size:.95rem; color:var(--muted); line-height:1.8;">
+        <strong style="color:var(--gold);">김세현</strong> · lms990302@naver.com · 010-3331-0292<br>
+        <span style="font-size:.8rem;">Java 21 · Spring Boot 3.4.4 · PostgreSQL (Supabase) · Thymeleaf</span>
+      </p>
+    </div>
+
+    <div style="margin-top:28px;">
+      <span class="tag tag-gold">localhost:8080</span>
+      <span class="tag tag-blue">ksh011 / lms990302</span>
+      <span class="tag tag-green">LVIP 등급 체험 가능</span>
+    </div>
+  </div>
+</div>
+
+<!-- 네비게이션 -->
+<div class="nav">
+  <button class="nav-btn" id="prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+  <div class="dot-nav" id="dot-nav"></div>
+  <span class="slide-counter" id="counter">1 / 12</span>
+  <button class="nav-btn" id="next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+// 도트 생성
+const dotNav = document.getElementById('dot-nav');
+slides.forEach((_,i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i===0?' active':'');
+  dot.onclick = () => goTo(i);
+  dotNav.appendChild(dot);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  dotNav.children[current].classList.remove('active');
+  current = (n + total) % total;
+  slides[current].classList.add('active');
+  dotNav.children[current].classList.add('active');
+  document.getElementById('counter').textContent = (current+1) + ' / ' + total;
+}
+
+document.getElementById('next-btn').onclick = () => goTo(current+1);
+document.getElementById('prev-btn').onclick = () => goTo(current-1);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') goTo(current+1);
+  if (e.key === 'ArrowLeft') goTo(current-1);
+});
+
+// 터치 스와이프
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) goTo(dx < 0 ? current+1 : current-1);
+});
+</script>
+</body>
+</html>

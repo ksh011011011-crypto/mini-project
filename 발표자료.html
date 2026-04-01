@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>세현 시네마 - 프로젝트 발표자료</title>
+<style>
+  :root {
+    --bg:    #0d0d1a;
+    --card:  #151525;
+    --gold:  #e4b400;
+    --gold2: #f0c93a;
+    --red:   #e83333;
+    --text:  #f0f0f0;
+    --muted: #8888aa;
+    --light: #c0c0d8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior: smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif; overflow-x:hidden; }
+
+  /* 슬라이드 공통 */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px;
+    position: relative;
+    border-bottom: 1px solid rgba(228,180,0,.1);
+  }
+  .slide-inner { max-width: 1000px; width: 100%; }
+
+  /* 슬라이드 번호 네비 */
+  .nav-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    cursor: pointer;
+    transition: all .3s;
+  }
+  .nav-dot:hover, .nav-dot.active { background: var(--gold); transform: scale(1.3); }
+
+  /* 슬라이드 1: 표지 */
+  .slide-cover {
+    background: linear-gradient(135deg, #060614 0%, #1a1a3e 50%, #0a0a1e 100%);
+    text-align: center;
+  }
+  .slide-cover::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(228,180,0,.08) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  /* 태그 */
+  .tag {
+    display: inline-block;
+    background: rgba(228,180,0,.12);
+    border: 1px solid rgba(228,180,0,.3);
+    color: var(--gold);
+    font-size: .78rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  /* 그리드 */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+  /* 카드 */
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all .3s;
+  }
+  .card:hover { border-color: rgba(228,180,0,.25); transform: translateY(-4px); }
+  .card-icon { font-size: 2rem; margin-bottom: 14px; }
+  .card h3 { color: var(--text); font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: .83rem; line-height: 1.7; }
+
+  /* 제목 스타일 */
+  .slide-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .slide-title .accent { color: var(--gold); }
+  .slide-subtitle { color: var(--muted); font-size: 1rem; margin-bottom: 40px; }
+
+  /* 섹션 제목 */
+  .section-label {
+    font-size: .72rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* 체크리스트 */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    color: var(--light); font-size: .9rem; margin-bottom: 10px; line-height: 1.6;
+  }
+  .checklist li::before { content:'✅'; flex-shrink:0; }
+
+  /* 기술 스택 배지 */
+  .tech-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: .82rem;
+    color: var(--text);
+    margin: 4px;
+  }
+  .tech-badge.be { border-color: rgba(111,159,255,.3); color: #8ab4ff; }
+  .tech-badge.fe { border-color: rgba(228,180,0,.3);   color: var(--gold); }
+  .tech-badge.db { border-color: rgba(76,175,80,.3);   color: #81c784; }
+
+  /* 플로우 다이어그램 */
+  .flow-step {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+    position: relative;
+  }
+  .flow-step .step-num {
+    position: absolute; top:-12px; left:50%; transform:translateX(-50%);
+    background: var(--gold); color: #000;
+    font-size: .72rem; font-weight: 900;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { color: var(--gold); font-size: .9rem; font-weight: 700; margin-bottom: 6px; }
+  .flow-step p  { color: var(--muted); font-size: .78rem; line-height: 1.5; }
+
+  /* VIP 등급 카드 */
+  .vip-card {
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    border-top: 3px solid;
+  }
+  .vip-card.v  { background: linear-gradient(160deg,#1a1530,#1e1a28); border-color: #b8952a; }
+  .vip-card.vv { background: linear-gradient(160deg,#1a1535,#252548); border-color: var(--gold); box-shadow: 0 4px 20px rgba(228,180,0,.2); }
+  .vip-card.lv { background: linear-gradient(160deg,#1e1e1e,#2e2e2e); border-color: #e0e0e0; }
+  .vip-grade   { font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; margin: 8px 0 4px; }
+
+  /* ERD 테이블 */
+  .erd-table {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: .8rem;
+  }
+  .erd-table-header {
+    background: rgba(228,180,0,.15);
+    color: var(--gold);
+    font-weight: 800;
+    padding: 10px 14px;
+    font-size: .85rem;
+    border-bottom: 1px solid rgba(228,180,0,.2);
+  }
+  .erd-table-row {
+    display: flex;
+    padding: 7px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    color: var(--light);
+  }
+  .erd-table-row:last-child { border-bottom: none; }
+  .col-name  { width: 140px; color: var(--text); font-weight: 600; }
+  .col-type  { width: 120px; color: #8ab4ff; }
+  .col-desc  { color: var(--muted); }
+
+  /* 진행 바 */
+  .progress-bar {
+    background: rgba(255,255,255,.08);
+    border-radius: 8px;
+    height: 10px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+  }
+
+  /* 타임라인 */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: rgba(228,180,0,.3); }
+  .timeline-item { position: relative; margin-bottom: 20px; }
+  .timeline-item::before {
+    content:''; position:absolute; left:-24px; top:6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--bg);
+  }
+  .timeline-item .tl-date { font-size: .75rem; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+  .timeline-item .tl-title { color: var(--text); font-size: .9rem; font-weight: 700; }
+  .timeline-item .tl-desc  { color: var(--muted); font-size: .82rem; margin-top: 4px; }
+
+  /* 반응형 */
+  @media(max-width:768px) {
+    .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+    .slide { padding: 40px 20px; }
+  }
+
+  /* 인쇄 */
+  @media print {
+    .nav-dots { display: none; }
+    .slide { page-break-after: always; min-height: auto; padding: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 네비게이션 닷 -->
+<div class="nav-dots" id="nav-dots">
+  <div class="nav-dot active" onclick="scrollToSlide(0)" title="표지"></div>
+  <div class="nav-dot" onclick="scrollToSlide(1)" title="목차"></div>
+  <div class="nav-dot" onclick="scrollToSlide(2)" title="프로젝트 개요"></div>
+  <div class="nav-dot" onclick="scrollToSlide(3)" title="기술 스택"></div>
+  <div class="nav-dot" onclick="scrollToSlide(4)" title="주요 기능"></div>
+  <div class="nav-dot" onclick="scrollToSlide(5)" title="예매 플로우"></div>
+  <div class="nav-dot" onclick="scrollToSlide(6)" title="VIP 멤버십"></div>
+  <div class="nav-dot" onclick="scrollToSlide(7)" title="데이터베이스 설계"></div>
+  <div class="nav-dot" onclick="scrollToSlide(8)" title="아키텍처"></div>
+  <div class="nav-dot" onclick="scrollToSlide(9)" title="고객센터 기능"></div>
+  <div class="nav-dot" onclick="scrollToSlide(10)" title="개발 성과"></div>
+  <div class="nav-dot" onclick="scrollToSlide(11)" title="마무리"></div>
+</div>
+
+<!-- ===== SLIDE 1: 표지 ===== -->
+<div class="slide slide-cover" id="slide-0">
+  <div class="slide-inner" style="z-index:2; text-align:center;">
+    <div style="font-size:3.5rem; margin-bottom:20px;">🎬</div>
+    <div style="font-size:3.5rem; font-weight:900; color:var(--gold); letter-spacing:6px; margin-bottom:4px;">SEHYUN</div>
+    <div style="font-size:1.8rem; font-weight:300; color:var(--light); letter-spacing:10px; margin-bottom:32px;">CINEMA</div>
+    <div style="width:80px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:0 auto 32px;"></div>
+    <p style="font-size:1.2rem; color:var(--light); margin-bottom:8px;">"세현 시네마 앱에서는 다양한 혜택을 드리고 있어요"</p>
+    <p style="color:var(--muted); margin-bottom:48px; font-size:.9rem;">풀스택 영화 예매 웹 서비스 구축 프로젝트</p>
+
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:48px;">
+      <div style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:16px 24px;">
+        <div style="color:var(--muted); font-size:.72rem; margin-bottom:4px;">서비스명</div>
+        <div style="color:var(--text); font-weight:700;">세현 시네마 (SEHYUN CINEMA)</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:16px 24px;">
+        <div style="color:var(--muted); font-size:.72rem; margin-bottom:4px;">대표이사</div>
+        <div style="color:var(--text); font-weight:700;">김세현 (Kim Se-hyeon)</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:16px 24px;">
+        <div style="color:var(--muted); font-size:.72rem; margin-bottom:4px;">개발 방식</div>
+        <div style="color:var(--text); font-weight:700;">1인 풀스택 개발</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:16px 24px;">
+        <div style="color:var(--muted); font-size:.72rem; margin-bottom:4px;">기준 연도</div>
+        <div style="color:var(--text); font-weight:700;">2026년</div>
+      </div>
+    </div>
+    <p style="color:var(--muted); font-size:.8rem;">▼ 스크롤하여 슬라이드 넘기기</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: 목차 ===== -->
+<div class="slide" id="slide-1">
+  <div class="slide-inner">
+    <div class="section-label">CONTENTS</div>
+    <h2 class="slide-title">목차</h2>
+    <p class="slide-subtitle">발표 구성 안내</p>
+    <div class="grid2" style="gap:16px;">
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid var(--gold); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">📋</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">01</div><div style="font-weight:700;">프로젝트 개요</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid var(--gold); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">⚙️</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">02</div><div style="font-weight:700;">기술 스택</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid var(--gold); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">🎯</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">03</div><div style="font-weight:700;">주요 기능</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid var(--gold); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">🎟️</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">04</div><div style="font-weight:700;">예매 플로우</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid var(--gold); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">👑</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">05</div><div style="font-weight:700;">VIP 멤버십</div></div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid rgba(228,180,0,.4); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">🗃️</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">06</div><div style="font-weight:700;">데이터베이스 설계 (ERD)</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid rgba(228,180,0,.4); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">🏗️</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">07</div><div style="font-weight:700;">시스템 아키텍처</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid rgba(228,180,0,.4); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">💬</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">08</div><div style="font-weight:700;">고객센터 기능</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid rgba(228,180,0,.4); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">📊</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">09</div><div style="font-weight:700;">개발 성과 및 구현 범위</div></div>
+        </div>
+        <div style="background:var(--card); border-radius:10px; padding:16px 20px; border-left:3px solid rgba(228,180,0,.4); display:flex; align-items:center; gap:14px;">
+          <span style="font-size:1.4rem; width:36px; text-align:center;">🎬</span>
+          <div><div style="color:var(--muted); font-size:.72rem;">10</div><div style="font-weight:700;">마무리 및 시연</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: 프로젝트 개요 ===== -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="section-label">PROJECT OVERVIEW</div>
+    <h2 class="slide-title">프로젝트 <span class="accent">개요</span></h2>
+    <p class="slide-subtitle">세현 시네마 영화 예매 웹 서비스란?</p>
+    <div class="grid2">
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="color:var(--gold); margin-bottom:16px;">📌 핵심 목표</h3>
+          <ul class="checklist">
+            <li>직관적인 영화 예매 시스템 구축</li>
+            <li>2026년 VIP 멤버십 등급 및 혜택 관리</li>
+            <li>Thymeleaf를 활용한 동적 웹 페이지 구현</li>
+            <li>Supabase PostgreSQL 실제 DB 연동</li>
+            <li>AI 챗봇 기반 고객 상담 시스템</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--gold); margin-bottom:16px;">🎯 타겟 사용자</h3>
+          <ul class="checklist">
+            <li>영화 관람객 (일반 회원)</li>
+            <li>VIP 멤버십 이용자 (VIP/VVIP/LVIP)</li>
+            <li>단체 관람 / 대관 이용 기업</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div style="background:linear-gradient(135deg,#1a1a3e,#0d0d1a); border-radius:14px; padding:28px; border:1px solid rgba(228,180,0,.15); height:100%; display:flex; flex-direction:column; gap:16px;">
+          <h3 style="color:var(--gold);">서비스 슬로건</h3>
+          <div style="text-align:center; padding:20px;">
+            <div style="font-size:1.4rem; color:var(--light); line-height:1.8; font-style:italic;">
+              "세현 시네마 앱에서는<br>다양한 혜택을 드리고 있어요"
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="background:rgba(255,255,255,.04); border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between;">
+              <span style="color:var(--muted); font-size:.82rem;">서비스명</span>
+              <span style="color:var(--text); font-weight:700; font-size:.82rem;">SEHYUN CINEMA</span>
+            </div>
+            <div style="background:rgba(255,255,255,.04); border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between;">
+              <span style="color:var(--muted); font-size:.82rem;">개발 유형</span>
+              <span style="color:var(--text); font-weight:700; font-size:.82rem;">풀스택 MVP</span>
+            </div>
+            <div style="background:rgba(255,255,255,.04); border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between;">
+              <span style="color:var(--muted); font-size:.82rem;">주요 페이지</span>
+              <span style="color:var(--gold); font-weight:700; font-size:.82rem;">12개 이상</span>
+            </div>
+            <div style="background:rgba(255,255,255,.04); border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between;">
+              <span style="color:var(--muted); font-size:.82rem;">API 엔드포인트</span>
+              <span style="color:var(--gold); font-weight:700; font-size:.82rem;">20개 이상</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: 기술 스택 ===== -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="section-label">TECH STACK</div>
+    <h2 class="slide-title">기술 <span class="accent">스택</span></h2>
+    <p class="slide-subtitle">사용된 기술 및 도구</p>
+    <div class="grid3" style="margin-bottom:28px;">
+      <div class="card">
+        <div class="card-icon" style="color:#8ab4ff;">☕</div>
+        <h3>백엔드 (Backend)</h3>
+        <div style="margin-top:10px;">
+          <span class="tech-badge be">Java 17</span>
+          <span class="tech-badge be">Spring Boot 3.2</span>
+          <span class="tech-badge be">Spring Data JPA</span>
+          <span class="tech-badge be">Spring Security</span>
+          <span class="tech-badge be">Thymeleaf</span>
+          <span class="tech-badge be">Lombok</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="color:var(--gold);">🎨</div>
+        <h3>프론트엔드 (Frontend)</h3>
+        <div style="margin-top:10px;">
+          <span class="tech-badge fe">HTML5</span>
+          <span class="tech-badge fe">CSS3</span>
+          <span class="tech-badge fe">JavaScript (ES6+)</span>
+          <span class="tech-badge fe">Bootstrap 5</span>
+          <span class="tech-badge fe">Font Awesome 6</span>
+          <span class="tech-badge fe">Thymeleaf</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="color:#81c784;">🗄️</div>
+        <h3>데이터베이스 / 인프라</h3>
+        <div style="margin-top:10px;">
+          <span class="tech-badge db">PostgreSQL</span>
+          <span class="tech-badge db">Supabase</span>
+          <span class="tech-badge db">Maven</span>
+          <span class="tech-badge db">Hibernate ORM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 아키텍처 다이어그램 -->
+    <div style="background:var(--card); border-radius:14px; padding:28px; border:1px solid rgba(255,255,255,.07);">
+      <h3 style="color:var(--gold); margin-bottom:20px; font-size:.95rem;">레이어드 아키텍처</h3>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;">
+        <div style="background:rgba(228,180,0,.1); border:1px solid rgba(228,180,0,.3); border-radius:10px; padding:12px 20px; text-align:center;">
+          <div style="color:var(--gold); font-weight:800; font-size:.85rem;">Presentation</div>
+          <div style="color:var(--muted); font-size:.72rem;">Thymeleaf / HTML / CSS / JS</div>
+        </div>
+        <div style="color:var(--muted); font-size:1.2rem;">→</div>
+        <div style="background:rgba(138,180,255,.08); border:1px solid rgba(138,180,255,.2); border-radius:10px; padding:12px 20px; text-align:center;">
+          <div style="color:#8ab4ff; font-weight:800; font-size:.85rem;">Controller</div>
+          <div style="color:var(--muted); font-size:.72rem;">Spring MVC + REST API</div>
+        </div>
+        <div style="color:var(--muted); font-size:1.2rem;">→</div>
+        <div style="background:rgba(76,175,80,.08); border:1px solid rgba(76,175,80,.2); border-radius:10px; padding:12px 20px; text-align:center;">
+          <div style="color:#81c784; font-weight:800; font-size:.85rem;">Service</div>
+          <div style="color:var(--muted); font-size:.72rem;">비즈니스 로직</div>
+        </div>
+        <div style="color:var(--muted); font-size:1.2rem;">→</div>
+        <div style="background:rgba(156,39,176,.08); border:1px solid rgba(156,39,176,.2); border-radius:10px; padding:12px 20px; text-align:center;">
+          <div style="color:#ce93d8; font-weight:800; font-size:.85rem;">Repository</div>
+          <div style="color:var(--muted); font-size:.72rem;">Spring Data JPA</div>
+        </div>
+        <div style="color:var(--muted); font-size:1.2rem;">→</div>
+        <div style="background:rgba(76,175,80,.1); border:1px solid rgba(76,175,80,.3); border-radius:10px; padding:12px 20px; text-align:center;">
+          <div style="color:#81c784; font-weight:800; font-size:.85rem;">Database</div>
+          <div style="color:var(--muted); font-size:.72rem;">PostgreSQL (Supabase)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: 주요 기능 ===== -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="section-label">KEY FEATURES</div>
+    <h2 class="slide-title">주요 <span class="accent">기능</span></h2>
+    <p class="slide-subtitle">구현된 핵심 기능 목록</p>
+    <div class="grid4">
+      <div class="card" style="border-top:2px solid var(--gold);">
+        <div class="card-icon">🎬</div>
+        <h3>영화 목록 & 검색</h3>
+        <p>TOP 10 + 더보기 10개씩 (최대 100개), 실시간 제목 검색, 현재/예정/아르떼 분류</p>
+      </div>
+      <div class="card" style="border-top:2px solid var(--gold);">
+        <div class="card-icon">🎟️</div>
+        <h3>3단계 예매 플로우</h3>
+        <p>영화 선택 → 좌석 선택 (D~L열, A~C 제한) → 쿠폰 적용 → 가상 결제</p>
+      </div>
+      <div class="card" style="border-top:2px solid var(--gold);">
+        <div class="card-icon">👤</div>
+        <h3>회원 인증 & 마이페이지</h3>
+        <p>Spring Security 기반 로그인/회원가입, 예매 내역, 찜 목록, 정보 수정</p>
+      </div>
+      <div class="card" style="border-top:2px solid var(--gold);">
+        <div class="card-icon">⭐</div>
+        <h3>리뷰 & 하트 기능</h3>
+        <p>별점(1~5점) 리뷰 CRUD, 하트(좋아요) 토글, 평균 평점 자동 계산</p>
+      </div>
+      <div class="card" style="border-top:2px solid rgba(228,180,0,.4);">
+        <div class="card-icon">👑</div>
+        <h3>VIP 멤버십 자동 산정</h3>
+        <p>결제 금액 누적 → 등급 자동 승급 (VIP/VVIP/LVIP), 2026년 기준 적용</p>
+      </div>
+      <div class="card" style="border-top:2px solid rgba(228,180,0,.4);">
+        <div class="card-icon">💬</div>
+        <h3>AI 상담톡 챗봇</h3>
+        <p>키워드 기반 자동 응답, 욕설 3회 시 차단, 1분 무응답 시 자동 종료</p>
+      </div>
+      <div class="card" style="border-top:2px solid rgba(228,180,0,.4);">
+        <div class="card-icon">📋</div>
+        <h3>고객센터 (FAQ / 공지)</h3>
+        <p>9개 카테고리 FAQ 아코디언, 공지사항 필터/검색, 조회수 카운트</p>
+      </div>
+      <div class="card" style="border-top:2px solid rgba(228,180,0,.4);">
+        <div class="card-icon">🏟️</div>
+        <h3>스페셜관 안내</h3>
+        <p>IMAX / 4DX / 수퍼플렉스 / 샤롯데 / 리클라이너 차등 요금 적용</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: 예매 플로우 ===== -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="section-label">BOOKING FLOW</div>
+    <h2 class="slide-title">예매 <span class="accent">플로우</span></h2>
+    <p class="slide-subtitle">3단계 예매 프로세스</p>
+    <div class="grid3" style="margin-bottom:36px;">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <h4>영화 / 상영관 선택</h4>
+        <p>현재 상영 중인 영화 중 선택<br>일반관·IMAX·4DX·수퍼플렉스·샤롯데·리클라이너 중 선택<br>상영 일시 지정</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <h4>인원 / 좌석 선택</h4>
+        <p>성인 / 청소년 인원 수 선택<br>좌석 맵에서 클릭 선택<br>(A~C열 시야 제한으로 선택 불가)</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <h4>쿠폰 적용 & 결제</h4>
+        <p>보유 쿠폰 적용 (선택)<br>결제 수단: 신용카드 / 휴대폰 / 카카오페이 / 토스페이 / 현금<br>결제 완료 → 예매 확정</p>
+      </div>
+    </div>
+
+    <!-- 가격표 -->
+    <div style="background:var(--card); border-radius:14px; padding:24px; border:1px solid rgba(255,255,255,.07);">
+      <h3 style="color:var(--gold); margin-bottom:16px; font-size:.95rem;">🎟️ 상영관별 관람 요금</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:130px; background:rgba(255,255,255,.04); border-radius:8px; padding:14px; text-align:center; border:1px solid rgba(255,255,255,.06);">
+          <div style="font-weight:800; color:var(--text); margin-bottom:4px;">일반관</div>
+          <div style="color:var(--gold); font-size:1.1rem; font-weight:900;">14,000원</div>
+        </div>
+        <div style="flex:1; min-width:130px; background:rgba(138,180,255,.06); border-radius:8px; padding:14px; text-align:center; border:1px solid rgba(138,180,255,.15);">
+          <div style="font-weight:800; color:#8ab4ff; margin-bottom:4px;">IMAX</div>
+          <div style="color:var(--gold); font-size:1.1rem; font-weight:900;">18,000원</div>
+        </div>
+        <div style="flex:1; min-width:130px; background:rgba(232,100,51,.06); border-radius:8px; padding:14px; text-align:center; border:1px solid rgba(232,100,51,.15);">
+          <div style="font-weight:800; color:#ff9966; margin-bottom:4px;">4DX</div>
+          <div style="color:var(--gold); font-size:1.1rem; font-weight:900;">19,000원</div>
+        </div>
+        <div style="flex:1; min-width:130px; background:rgba(76,175,80,.06); border-radius:8px; padding:14px; text-align:center; border:1px solid rgba(76,175,80,.15);">
+          <div style="font-weight:800; color:#81c784; margin-bottom:4px;">수퍼플렉스</div>
+          <div style="color:var(--gold); font-size:1.1rem; font-weight:900;">17,000원</div>
+        </div>
+        <div style="flex:1; min-width:130px; background:rgba(228,180,0,.08); border-radius:8px; padding:14px; text-align:center; border:1px solid rgba(228,180,0,.2);">
+          <div style="font-weight:800; color:var(--gold); margin-bottom:4px;">샤롯데</div>
+          <div style="color:var(--gold); font-size:1.1rem; font-weight:900;">22,000원</div>
+        </div>
+        <div style="flex:1; min-width:130px; background:rgba(206,147,216,.06); border-radius:8px; padding:14px; text-align:center; border:1px solid rgba(206,147,216,.15);">
+          <div style="font-weight:800; color:#ce93d8; margin-bottom:4px;">리클라이너</div>
+          <div style="color:var(--gold); font-size:1.1rem; font-weight:900;">16,000원</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: VIP 멤버십 ===== -->
+<div class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="section-label">VIP MEMBERSHIP</div>
+    <h2 class="slide-title">VIP <span class="accent">멤버십</span> 시스템</h2>
+    <p class="slide-subtitle">2026년 기준 등급별 자동 산정</p>
+    <div class="grid3" style="margin-bottom:28px;">
+      <div class="vip-card v">
+        <div style="color:#b8952a; font-size:1.6rem;">👑</div>
+        <div class="vip-grade" style="color:#b8952a;">VIP</div>
+        <div style="color:var(--muted); font-size:.78rem; margin-bottom:14px;">연 260,000원 이상</div>
+        <ul style="list-style:none; font-size:.82rem; color:var(--light); text-align:left; line-height:1.8;">
+          <li>✅ 일반 관람권 [주중] 2매</li>
+          <li>✅ 스페셜관 관람권 1매</li>
+          <li>✅ 팝콘M 교환권 1매</li>
+          <li>✅ 생일 스위트 콤보 1매</li>
+        </ul>
+      </div>
+      <div class="vip-card vv">
+        <div style="color:var(--gold); font-size:1.8rem;">👑</div>
+        <div class="vip-grade" style="color:var(--gold);">VVIP</div>
+        <div style="color:var(--muted); font-size:.78rem; margin-bottom:14px;">연 300,000원 이상</div>
+        <ul style="list-style:none; font-size:.82rem; color:var(--light); text-align:left; line-height:1.8;">
+          <li>✅ A형/B형 선택 관람권 최대 8매</li>
+          <li>✅ 스페셜관 관람권 2매</li>
+          <li>✅ 팝콘M + 음료 교환권 2매씩</li>
+          <li>✅ 생일 스위트 콤보 + 추가 혜택</li>
+        </ul>
+      </div>
+      <div class="vip-card lv">
+        <div style="color:#e0e0e0; font-size:1.8rem;">👑</div>
+        <div class="vip-grade" style="color:#e0e0e0;">LVIP</div>
+        <div style="color:var(--muted); font-size:.78rem; margin-bottom:14px;">연 360,000원 이상</div>
+        <ul style="list-style:none; font-size:.82rem; color:var(--light); text-align:left; line-height:1.8;">
+          <li>✅ A형/B형 관람권 최대 12매</li>
+          <li>✅ 스페셜관 + 매점 혜택 최대</li>
+          <li>✅ 세현마트 15% 할인</li>
+          <li>✅ 세현 렌터카 92% 할인</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 자동 등급 산정 로직 -->
+    <div style="background:var(--card); border-radius:12px; padding:20px 24px; border:1px solid rgba(255,255,255,.07);">
+      <h3 style="color:var(--gold); margin-bottom:14px; font-size:.9rem;">⚙️ 자동 등급 산정 로직 (Member.java)</h3>
+      <div style="background:rgba(0,0,0,.4); border-radius:8px; padding:16px; font-family:monospace; font-size:.82rem; color:#81c784; line-height:1.7; overflow-x:auto;">
+        <span style="color:#ce93d8;">public void</span> <span style="color:#8ab4ff;">updateGrade</span>() {<br>
+        &nbsp;&nbsp;<span style="color:#ce93d8;">if</span> (totalSpent &gt;= <span style="color:var(--gold);">360000</span>) grade = <span style="color:#ff9966;">"LVIP"</span>;<br>
+        &nbsp;&nbsp;<span style="color:#ce93d8;">else if</span> (totalSpent &gt;= <span style="color:var(--gold);">300000</span>) grade = <span style="color:#ff9966;">"VVIP"</span>;<br>
+        &nbsp;&nbsp;<span style="color:#ce93d8;">else if</span> (totalSpent &gt;= <span style="color:var(--gold);">260000</span>) grade = <span style="color:#ff9966;">"VIP"</span>;<br>
+        &nbsp;&nbsp;<span style="color:#ce93d8;">else</span> grade = <span style="color:#ff9966;">"일반"</span>;<br>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: ERD ===== -->
+<div class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="section-label">DATABASE DESIGN</div>
+    <h2 class="slide-title">데이터베이스 <span class="accent">설계</span></h2>
+    <p class="slide-subtitle">ERD - PostgreSQL (Supabase 연동)</p>
+    <div class="grid2">
+      <div>
+        <div class="erd-table" style="margin-bottom:14px;">
+          <div class="erd-table-header">👤 members (회원)</div>
+          <div class="erd-table-row"><span class="col-name">id (PK)</span><span class="col-type">BIGINT</span><span class="col-desc">자동 증가</span></div>
+          <div class="erd-table-row"><span class="col-name">username</span><span class="col-type">VARCHAR(50)</span><span class="col-desc">로그인 ID (unique)</span></div>
+          <div class="erd-table-row"><span class="col-name">grade</span><span class="col-type">VARCHAR(20)</span><span class="col-desc">일반/VIP/VVIP/LVIP</span></div>
+          <div class="erd-table-row"><span class="col-name">total_spent</span><span class="col-type">INTEGER</span><span class="col-desc">누적 결제액 (등급 산정)</span></div>
+        </div>
+        <div class="erd-table" style="margin-bottom:14px;">
+          <div class="erd-table-header">🎬 movies (영화)</div>
+          <div class="erd-table-row"><span class="col-name">id (PK)</span><span class="col-type">BIGINT</span><span class="col-desc">자동 증가</span></div>
+          <div class="erd-table-row"><span class="col-name">title</span><span class="col-type">VARCHAR(100)</span><span class="col-desc">영화 제목</span></div>
+          <div class="erd-table-row"><span class="col-name">status</span><span class="col-type">VARCHAR(20)</span><span class="col-desc">SHOWING/UPCOMING/ARTE</span></div>
+          <div class="erd-table-row"><span class="col-name">rating_avg</span><span class="col-type">DECIMAL(3,2)</span><span class="col-desc">평균 평점</span></div>
+          <div class="erd-table-row"><span class="col-name">rank_position</span><span class="col-type">INTEGER</span><span class="col-desc">TOP 순위</span></div>
+        </div>
+        <div class="erd-table">
+          <div class="erd-table-header">📋 notices (공지사항)</div>
+          <div class="erd-table-row"><span class="col-name">category</span><span class="col-type">VARCHAR(50)</span><span class="col-desc">전체/서울/경기 등</span></div>
+          <div class="erd-table-row"><span class="col-name">is_important</span><span class="col-type">BOOLEAN</span><span class="col-desc">중요 공지 여부 (!)</span></div>
+          <div class="erd-table-row"><span class="col-name">view_count</span><span class="col-type">INTEGER</span><span class="col-desc">조회수</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="erd-table" style="margin-bottom:14px;">
+          <div class="erd-table-header">🎟️ bookings (예매)</div>
+          <div class="erd-table-row"><span class="col-name">member_id (FK)</span><span class="col-type">BIGINT</span><span class="col-desc">→ members</span></div>
+          <div class="erd-table-row"><span class="col-name">movie_id (FK)</span><span class="col-type">BIGINT</span><span class="col-desc">→ movies</span></div>
+          <div class="erd-table-row"><span class="col-name">theater_type</span><span class="col-type">VARCHAR(30)</span><span class="col-desc">일반관/IMAX 등</span></div>
+          <div class="erd-table-row"><span class="col-name">seat_info</span><span class="col-type">VARCHAR(20)</span><span class="col-desc">D-12 형식</span></div>
+          <div class="erd-table-row"><span class="col-name">total_price</span><span class="col-type">INTEGER</span><span class="col-desc">최종 결제 금액</span></div>
+        </div>
+        <div class="erd-table" style="margin-bottom:14px;">
+          <div class="erd-table-header">⭐ reviews (리뷰)</div>
+          <div class="erd-table-row"><span class="col-name">member_id (FK)</span><span class="col-type">BIGINT</span><span class="col-desc">→ members</span></div>
+          <div class="erd-table-row"><span class="col-name">movie_id (FK)</span><span class="col-type">BIGINT</span><span class="col-desc">→ movies</span></div>
+          <div class="erd-table-row"><span class="col-name">rating</span><span class="col-type">INTEGER</span><span class="col-desc">1~5점</span></div>
+        </div>
+        <div class="erd-table">
+          <div class="erd-table-header">❤️ hearts + 💬 inquiries</div>
+          <div class="erd-table-row"><span class="col-name">hearts</span><span class="col-type">unique(member,movie)</span><span class="col-desc">좋아요 (중복 방지)</span></div>
+          <div class="erd-table-row"><span class="col-name">inquiries</span><span class="col-type">+ faqs</span><span class="col-desc">1:1문의 / FAQ CRUD</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9: 아키텍처 ===== -->
+<div class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="section-label">ARCHITECTURE</div>
+    <h2 class="slide-title">시스템 <span class="accent">아키텍처</span></h2>
+    <p class="slide-subtitle">Spring Boot MVC 패턴 기반 구조</p>
+    <div class="grid2" style="margin-bottom:28px;">
+      <div>
+        <h3 style="color:var(--gold); margin-bottom:14px; font-size:.95rem;">📁 패키지 구조</h3>
+        <div style="background:rgba(0,0,0,.4); border-radius:10px; padding:16px; font-family:monospace; font-size:.8rem; color:var(--light); line-height:2;">
+          com.sehyun.cinema/<br>
+          <span style="color:#8ab4ff;">├── config/</span> SecurityConfig, DataInitializer<br>
+          <span style="color:var(--gold);">├── controller/</span> Main, Movie, Booking, Member, Customer, Api<br>
+          <span style="color:#81c784;">├── service/</span> Member, Movie, Booking, Customer<br>
+          <span style="color:#ce93d8;">├── repository/</span> JPA Repositories (7개)<br>
+          <span style="color:#ff9966;">├── entity/</span> Member, Movie, Booking, Review, Heart, Notice, FAQ, Inquiry<br>
+          <span style="color:var(--muted);">└── dto/</span> MemberJoinDto, BookingDto
+        </div>
+      </div>
+      <div>
+        <h3 style="color:var(--gold); margin-bottom:14px; font-size:.95rem;">🌐 주요 URL 매핑</h3>
+        <div style="background:var(--card); border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,.06);">
+          <div style="display:grid; grid-template-columns:1fr 1fr; padding:8px 14px; background:rgba(228,180,0,.1); font-size:.72rem; font-weight:700; color:var(--gold);">
+            <span>URL</span><span>설명</span>
+          </div>
+          <div th:each="row" style="display:grid; grid-template-columns:1fr 1fr; padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; color:var(--light);">
+          </div>
+          <div style="padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; display:grid; grid-template-columns:1fr 1fr;"><span style="color:#8ab4ff;">GET /</span><span>메인 페이지</span></div>
+          <div style="padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; display:grid; grid-template-columns:1fr 1fr;"><span style="color:#8ab4ff;">GET /movies/{id}</span><span>영화 상세</span></div>
+          <div style="padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; display:grid; grid-template-columns:1fr 1fr;"><span style="color:var(--gold);">POST /booking/confirm</span><span>예매 확정</span></div>
+          <div style="padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; display:grid; grid-template-columns:1fr 1fr;"><span style="color:var(--gold);">POST /login</span><span>로그인 처리</span></div>
+          <div style="padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; display:grid; grid-template-columns:1fr 1fr;"><span style="color:#81c784;">POST /api/movies/{id}/heart</span><span>하트 토글 (REST)</span></div>
+          <div style="padding:8px 14px; border-top:1px solid rgba(255,255,255,.04); font-size:.78rem; display:grid; grid-template-columns:1fr 1fr;"><span style="color:#81c784;">POST /api/chat</span><span>AI 상담톡 응답</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 보안 설정 -->
+    <div style="background:rgba(232,51,51,.05); border:1px solid rgba(232,51,51,.2); border-radius:12px; padding:20px 24px;">
+      <h3 style="color:var(--red); margin-bottom:12px; font-size:.9rem;">🔐 Spring Security 설정</h3>
+      <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:.82rem; color:var(--light);">
+        <span>✅ BCrypt 비밀번호 암호화</span>
+        <span>✅ CSRF 보호 (AJAX 제외)</span>
+        <span>✅ 예매·마이페이지 인증 필수</span>
+        <span>✅ 공개 URL: /, /movies/**, /membership 등</span>
+        <span>✅ 30분 세션 만료</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10: 고객센터 ===== -->
+<div class="slide" id="slide-9">
+  <div class="slide-inner">
+    <div class="section-label">CUSTOMER SERVICE</div>
+    <h2 class="slide-title">고객센터 <span class="accent">기능</span></h2>
+    <p class="slide-subtitle">FAQ · 공지사항 · AI 상담톡 · 1:1 문의</p>
+    <div class="grid2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h3>FAQ 시스템</h3>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>9개 카테고리 탭 (영화관이용·스페셜관·L.POINT·회원·멤버십·온라인·할인혜택·관람권·스토어)</li>
+          <li>질문 클릭 시 아코디언 방식 답변 표시</li>
+          <li>키워드 검색 + 페이지네이션 (10개씩)</li>
+          <li>1:1 문의 바로가기 링크</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">📢</div>
+        <h3>공지사항</h3>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>카테고리 필터 (전체·영화관·서울·경기/인천)</li>
+          <li>중요 공지(!) 표시 - 상단 고정</li>
+          <li>제목/내용 검색 + 페이지네이션</li>
+          <li>조회수 자동 증가</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>AI 상담톡 챗봇</h3>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>빠른 선택 버튼 (예매/결제·영화관·이벤트·분실)</li>
+          <li>키워드 기반 자동 응답 (예매·취소·VIP·IMAX 등)</li>
+          <li>욕설 3회 감지 시 상담 차단 경고</li>
+          <li>1분 무응답 자동 종료</li>
+          <li>"자동예매" 키워드 → 예매 페이지 연결</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">✉️</div>
+        <h3>1:1 문의</h3>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>분류: 영화관·멤버십/회원·예매/결제·이벤트</li>
+          <li>종류: 문의·칭찬·불만·건의</li>
+          <li>이메일/SMS 알림 선택</li>
+          <li>개인정보 수집 동의 항목 포함</li>
+          <li>MY 문의내역 조회 (로그인 시)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11: 개발 성과 ===== -->
+<div class="slide" id="slide-10">
+  <div class="slide-inner">
+    <div class="section-label">DEVELOPMENT RESULTS</div>
+    <h2 class="slide-title">개발 <span class="accent">성과</span></h2>
+    <p class="slide-subtitle">구현 범위 및 코드 현황</p>
+    <div class="grid4" style="margin-bottom:28px;">
+      <div style="background:var(--card); border-radius:12px; padding:20px; text-align:center; border:1px solid rgba(228,180,0,.15);">
+        <div style="font-size:2rem; font-weight:900; color:var(--gold);">50+</div>
+        <div style="color:var(--muted); font-size:.82rem; margin-top:4px;">총 생성 파일 수</div>
+      </div>
+      <div style="background:var(--card); border-radius:12px; padding:20px; text-align:center; border:1px solid rgba(138,180,255,.15);">
+        <div style="font-size:2rem; font-weight:900; color:#8ab4ff;">12+</div>
+        <div style="color:var(--muted); font-size:.82rem; margin-top:4px;">Thymeleaf 템플릿</div>
+      </div>
+      <div style="background:var(--card); border-radius:12px; padding:20px; text-align:center; border:1px solid rgba(76,175,80,.15);">
+        <div style="font-size:2rem; font-weight:900; color:#81c784;">8</div>
+        <div style="color:var(--muted); font-size:.82rem; margin-top:4px;">JPA 엔티티</div>
+      </div>
+      <div style="background:var(--card); border-radius:12px; padding:20px; text-align:center; border:1px solid rgba(206,147,216,.15);">
+        <div style="font-size:2rem; font-weight:900; color:#ce93d8;">6</div>
+        <div style="color:var(--muted); font-size:.82rem; margin-top:4px;">MVC 컨트롤러</div>
+      </div>
+    </div>
+
+    <!-- 기능별 구현 현황 -->
+    <div style="background:var(--card); border-radius:14px; padding:28px; border:1px solid rgba(255,255,255,.07);">
+      <h3 style="color:var(--gold); margin-bottom:20px; font-size:.95rem;">기능별 구현 현황</h3>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--light); font-size:.85rem;">영화 목록 / 검색 / 상세</span><span style="color:var(--gold); font-size:.82rem; font-weight:700;">100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--light); font-size:.85rem;">예매 시스템 (3단계 플로우)</span><span style="color:var(--gold); font-size:.82rem; font-weight:700;">100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--light); font-size:.85rem;">회원 인증 (로그인/가입/보안)</span><span style="color:var(--gold); font-size:.82rem; font-weight:700;">100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--light); font-size:.85rem;">VIP 멤버십 자동 등급 산정</span><span style="color:var(--gold); font-size:.82rem; font-weight:700;">100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--light); font-size:.85rem;">고객센터 (FAQ/공지/1:1문의)</span><span style="color:var(--gold); font-size:.82rem; font-weight:700;">100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--light); font-size:.85rem;">AI 상담톡 (챗봇)</span><span style="color:#8ab4ff; font-size:.82rem; font-weight:700;">80% (규칙 기반)</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:80%; background:linear-gradient(90deg,#6f9fff,#8ab4ff);"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: 마무리 ===== -->
+<div class="slide" id="slide-11" style="background:linear-gradient(135deg,#060614,#1a1a3e,#060614);">
+  <div class="slide-inner" style="text-align:center; z-index:2; position:relative;">
+    <div style="font-size:3rem; margin-bottom:20px;">🎬</div>
+    <div class="section-label" style="justify-content:center; display:flex;">THANK YOU</div>
+    <h2 style="font-size:2.8rem; font-weight:900; color:var(--gold); letter-spacing:4px; margin-bottom:8px;">SEHYUN CINEMA</h2>
+    <p style="color:var(--light); font-size:1.1rem; margin-bottom:36px;">세현 시네마 프로젝트 발표를 들어주셔서 감사합니다.</p>
+
+    <div style="background:rgba(228,180,0,.07); border:1px solid rgba(228,180,0,.2); border-radius:14px; padding:28px; max-width:500px; margin:0 auto 36px; text-align:left;">
+      <h3 style="color:var(--gold); margin-bottom:16px; font-size:.95rem;">🚀 실행 방법</h3>
+      <div style="background:rgba(0,0,0,.4); border-radius:8px; padding:14px; font-family:monospace; font-size:.8rem; color:#81c784; line-height:1.8;">
+        1. application.properties 에서 Supabase 비밀번호 설정<br>
+        2. <span style="color:#8ab4ff;">mvn spring-boot:run</span><br>
+        3. 브라우저에서 <span style="color:var(--gold);">http://localhost:8080</span> 접속<br>
+        <br>
+        기본 계정: <span style="color:var(--gold);">admin / admin1234</span>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,.05); border-radius:10px; padding:14px 20px; font-size:.82rem; color:var(--muted);">
+        <div style="color:var(--text); font-weight:700; margin-bottom:2px;">개발자</div>세현시네마(주)
+      </div>
+      <div style="background:rgba(255,255,255,.05); border-radius:10px; padding:14px 20px; font-size:.82rem; color:var(--muted);">
+        <div style="color:var(--text); font-weight:700; margin-bottom:2px;">연락처</div>010-3331-0292
+      </div>
+      <div style="background:rgba(255,255,255,.05); border-radius:10px; padding:14px 20px; font-size:.82rem; color:var(--muted);">
+        <div style="color:var(--text); font-weight:700; margin-bottom:2px;">이메일</div>lms990302@naver.com
+      </div>
+    </div>
+
+    <p style="margin-top:40px; color:rgba(255,255,255,.2); font-size:.75rem;">Copyright © Sehyun movie. All rights reserved.</p>
+  </div>
+</div>
+
+<script>
+// 슬라이드 네비게이션
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.nav-dot');
+
+function scrollToSlide(idx) {
+  slides[idx]?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// IntersectionObserver로 현재 슬라이드 표시
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(slides).indexOf(entry.target);
+      dots.forEach(d => d.classList.remove('active'));
+      if (dots[idx]) dots[idx].classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+slides.forEach(s => observer.observe(s));
+
+// 키보드 네비게이션
+let currentSlide = 0;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+    currentSlide = Math.min(currentSlide + 1, slides.length - 1);
+    scrollToSlide(currentSlide);
+  } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+    currentSlide = Math.max(currentSlide - 1, 0);
+    scrollToSlide(currentSlide);
+  }
+});
+</script>
+</body>
+</html>

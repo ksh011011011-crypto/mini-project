@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('AI 상담톡')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding:50px 0 80px;">
+  <div class="container-xl" style="max-width:640px;">
+    <h1 style="font-size:1.4rem; font-weight:900; color:var(--text-primary); margin-bottom:8px;">AI 상담톡</h1>
+    <p style="color:var(--text-muted); font-size:.82rem; margin-bottom:24px;">
+      규칙 기반 AI가 예매·멤버십·상영관 등을 안내합니다.
+      <strong style="color:var(--gold);">「자동예매」</strong> 입력 시 상영 중 영화 하나가 골라져 예매 화면으로 이동합니다. (실제 결제 전 로그인·좌석 확인 필요)
+    </p>
+
+    <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color); overflow:hidden; height:520px; display:flex; flex-direction:column;">
+      <div style="padding:16px 20px; background:#12122a; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:36px; height:36px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000; font-weight:900; font-size:.8rem;">AI</div>
+          <div>
+            <div style="font-weight:700; color:var(--text-primary); font-size:.9rem;">세현시네마</div>
+            <div id="status-dot" style="font-size:.72rem; color:#4caf50;">● 상담 가능</div>
+          </div>
+        </div>
+        <a th:href="@{/}" style="color:var(--text-muted); font-size:.8rem;">상담 종료 ✕</a>
+      </div>
+
+      <div id="chat-messages" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px;">
+        <div class="chat-msg bot">
+          <div class="chat-bubble bot">안녕하세요! 세현시네마입니다 😊<br>키워드로 빠르게 안내받거나, 아래 버튼을 눌러 보세요.</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-left:8px;" id="quick-btns">
+          <button type="button" class="quick-btn" onclick="sendMessage('예매 방법 알려줘')">예매 안내</button>
+          <button type="button" class="quick-btn" onclick="sendMessage('자동예매')">자동예매</button>
+          <button type="button" class="quick-btn" onclick="sendMessage('상영시간표')">상영시간표</button>
+          <button type="button" class="quick-btn" onclick="sendMessage('IMAX 안내')">IMAX</button>
+          <button type="button" class="quick-btn" onclick="sendMessage('환불 규정')">환불</button>
+        </div>
+      </div>
+
+      <div style="padding:14px 16px; border-top:1px solid rgba(255,255,255,.06); display:flex; gap:8px; background:#0e0e22;">
+        <button type="button" title="파일 첨부" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem;">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <input type="text" id="chat-input" class="search-input" style="flex:1; border-radius:20px;"
+               placeholder="메시지 입력 (예: 자동예매, 환불, 멤버십)" onkeydown="if(event.key==='Enter') sendMessage()"/>
+        <button type="button" id="send-btn" onclick="sendMessage()" style="background:var(--gold); border:none; color:#000; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:.9rem;">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <p style="text-align:center; font-size:.75rem; color:var(--text-muted); margin-top:12px;">
+      <a th:href="@{/customer/faq}" style="color:var(--gold);">FAQ</a>
+      &nbsp;·&nbsp;
+      <a th:href="@{/booking}" style="color:var(--gold);">예매 바로가기</a>
+    </p>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+
+<script>
+let inactivityTimer = null;
+
+function scrollToBottom() {
+  const msgs = document.getElementById('chat-messages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addMessage(text, type) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + type;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble ' + type;
+  bubble.innerHTML = text.replace(/\n/g, '<br>');
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  scrollToBottom();
+}
+
+function resetInactivity() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    addMessage('1분간 응답이 없어 상담이 종료되었습니다.', 'bot');
+  }, 60000);
+}
+
+async function sendMessage(text) {
+  const input = document.getElementById('chat-input');
+  const message = text || input.value.trim();
+  if (!message) return;
+
+  input.value = '';
+  addMessage(message, 'user');
+  resetInactivity();
+
+  const quickBtns = document.getElementById('quick-btns');
+  if (quickBtns) quickBtns.style.display = 'none';
+
+  const typingId = 'typing-' + Date.now();
+  const typingDiv = document.createElement('div');
+  typingDiv.id = typingId;
+  typingDiv.className = 'chat-msg bot';
+  typingDiv.innerHTML = '<div class="chat-bubble bot" style="opacity:.5;">입력 중...</div>';
+  document.getElementById('chat-messages').appendChild(typingDiv);
+  scrollToBottom();
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ message })
+    });
+    document.getElementById(typingId)?.remove();
+
+    if (!resp.ok) {
+      addMessage('서버 응답 오류 (' + resp.status + '). 로그인 상태나 네트워크를 확인한 뒤 다시 시도해 주세요.', 'bot');
+      return;
+    }
+
+    const raw = await resp.text();
+    let data;
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      addMessage('응답을 해석할 수 없습니다. 관리자에게 문의하거나 잠시 후 다시 시도해 주세요.', 'bot');
+      return;
+    }
+
+    const reply = data.response;
+    if (reply && String(reply).startsWith('__AUTO_BOOKING__')) {
+      const parts = String(reply).split(':');
+      const movieId = parts.length > 1 ? parts[1].trim() : '';
+      addMessage('🎬 상영 중인 작품으로 예매 화면을 엽니다. (좌석·결제는 직접 선택)', 'bot');
+      const q = movieId ? '?movieId=' + encodeURIComponent(movieId) + '&auto=1' : '?auto=1';
+      setTimeout(() => { location.href = '/booking' + q; }, 700);
+      return;
+    }
+    addMessage(reply || '응답이 비어 있습니다.', 'bot');
+  } catch (e) {
+    document.getElementById(typingId)?.remove();
+    addMessage('네트워크 오류입니다. 서버가 켜져 있는지 확인 후 다시 시도해 주세요.', 'bot');
+  }
+}
+
+scrollToBottom();
+</script>
+</body>
+</html>

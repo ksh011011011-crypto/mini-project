@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head('VIP 멤버십 · 할인 안내')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding:0 0 80px;">
+  <!-- 히어로 -->
+  <section style="background:linear-gradient(135deg,#0d0d1a 0%,#1a1a3e 50%,#0d0d1a 100%); padding:70px 20px; text-align:center; position:relative; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(228,180,0,.08) 0%, transparent 70%);"></div>
+    <div style="position:relative; z-index:2;">
+      <p style="color:var(--gold); letter-spacing:5px; font-size:.8rem; margin-bottom:12px; text-transform:uppercase;">MEMBERSHIP</p>
+      <h1 style="font-size:3rem; font-weight:900; color:var(--text-primary); margin-bottom:12px;">VIP ZONE</h1>
+      <p style="color:var(--text-muted); font-size:1rem;">2026년 기준 VIP 멤버십 등급 · 제휴 카드 · VIP 라운지 할인 안내</p>
+    </div>
+  </section>
+
+  <div class="container-xl" style="padding-top:60px;">
+    <!-- 등급 안내 -->
+    <div class="membership-grid" style="margin-bottom:60px;">
+      <!-- VIP -->
+      <div class="membership-card vip">
+        <div class="membership-crown"><i class="fa-solid fa-crown"></i></div>
+        <h3 class="membership-grade">VIP</h3>
+        <p class="membership-condition">연 260,000원 이상 결제 (1년 유지)</p>
+        <div style="margin-bottom:16px;">
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🎬 영화 혜택 (공통형)</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 일반 관람권 [주중] 2매</li>
+            <li><i class="fa-solid fa-check"></i> 스페셜관 관람권 [주중·주말] 1매</li>
+          </ul>
+        </div>
+        <div style="margin-bottom:20px;">
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🍿 매점 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 팝콘M 교환권 1매</li>
+            <li><i class="fa-solid fa-check"></i> 탄산/아메리카노 교환권 1매</li>
+            <li><i class="fa-solid fa-check"></i> 콤보 3,000원 할인권 2매</li>
+          </ul>
+        </div>
+        <div>
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🎂 생일 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 스위트 콤보 1매 (생년월 1일 자동 지급)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- VVIP -->
+      <div class="membership-card vvip">
+        <div class="membership-crown"><i class="fa-solid fa-crown"></i></div>
+        <h3 class="membership-grade">VVIP</h3>
+        <p class="membership-condition">연 300,000원 이상 결제 (3년 유지)</p>
+        <div style="margin-bottom:16px;">
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🎬 영화 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> A형: 일반 관람권 [주중] 2매 + [주중·주말] 6매</li>
+            <li><i class="fa-solid fa-check"></i> B형: 일반 관람권 [주중] 4매 + [주중·주말] 2매 + 스페셜관 2매</li>
+          </ul>
+        </div>
+        <div style="margin-bottom:20px;">
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🍿 매점 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 팝콘M 교환권 2매</li>
+            <li><i class="fa-solid fa-check"></i> 탄산/아메리카노 교환권 2매</li>
+            <li><i class="fa-solid fa-check"></i> 콤보 3,000원 할인권 2매</li>
+            <li><i class="fa-solid fa-check"></i> 팝콘 2,000원 할인권 2매</li>
+          </ul>
+        </div>
+        <div>
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🎂 생일 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 스위트 콤보 1매 + 추가 혜택</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- LVIP -->
+      <div class="membership-card lvip">
+        <div class="membership-crown"><i class="fa-solid fa-crown"></i></div>
+        <h3 class="membership-grade">LVIP</h3>
+        <p class="membership-condition">연 360,000원 이상 결제</p>
+        <div style="margin-bottom:16px;">
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🎬 영화 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> A형: 일반 관람권 [주중] 4매 + [주중·주말] 8매</li>
+            <li><i class="fa-solid fa-check"></i> B형: 일반 관람권 [주중] 8매 + [주중·주말] 2매 + 스페셜관 2매</li>
+          </ul>
+        </div>
+        <div style="margin-bottom:20px;">
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🍿 매점 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 팝콘M 교환권 2매</li>
+            <li><i class="fa-solid fa-check"></i> 탄산/아메리카노 교환권 2매</li>
+            <li><i class="fa-solid fa-check"></i> 콤보 3,000원 할인권 3매</li>
+            <li><i class="fa-solid fa-check"></i> 팝콘 2,000원 할인권 3매</li>
+            <li><i class="fa-solid fa-check"></i> 스위트 콤보 1매</li>
+          </ul>
+        </div>
+        <div>
+          <p style="color:var(--text-muted); font-size:.78rem; font-weight:700; margin-bottom:8px;">🤝 특별 제휴 혜택</p>
+          <ul class="membership-benefits">
+            <li><i class="fa-solid fa-check"></i> 세현마트 구매금액 최대 15% 할인</li>
+            <li><i class="fa-solid fa-check"></i> 세현 렌터카 연 구독료 92% 할인</li>
+            <li><i class="fa-solid fa-check"></i> 롯데홈쇼핑 L.CLUB 즉시 무료 가입</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 할인 안내: 제휴 카드 · VIP 라운지 · 특별 요금 -->
+    <section class="discount-guide-block" aria-labelledby="discount-guide-title" style="margin-bottom:48px;">
+      <h2 id="discount-guide-title" style="color:var(--gold); font-size:1.35rem; font-weight:900; margin-bottom:10px; text-align:center;">
+        <i class="fa-solid fa-tags" style="margin-right:10px;"></i>할인 안내
+      </h2>
+      <p style="text-align:center; color:var(--text-muted); font-size:.88rem; margin-bottom:8px; max-width:760px; margin-left:auto; margin-right:auto; line-height:1.65;">
+        멤버십 등급 혜택과 <strong style="color:var(--text-primary);">별도로</strong> 적용되는 예매·매점 할인입니다. 아래는 대표 기준이며, 카드사·지점·프로모션에 따라 달라질 수 있습니다.
+      </p>
+      <p style="text-align:center; color:rgba(255,255,255,.45); font-size:.78rem; margin-bottom:32px;">
+        결제 화면에서 카드 선택 시 즉시할인이 반영됩니다 · 예매 페이지 가상카드 메뉴와 연동
+      </p>
+
+      <h3 style="color:var(--text-primary); font-size:1.02rem; font-weight:800; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(228,180,0,.2);">
+        <i class="fa-solid fa-credit-card" style="color:var(--lotte-red); margin-right:8px;"></i>제휴 카드 즉시·청구 할인
+      </h3>
+      <div class="discount-card-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:36px;">
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:18px 20px;">
+          <div style="font-weight:900; color:var(--text-primary); margin-bottom:6px;">신한카드</div>
+          <div style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;">최대 7% 즉시할인</div>
+          <p style="font-size:.8rem; color:var(--text-muted); line-height:1.55; margin:0;">Deep Dream / The BEST 등 일부 카드 · 월 1만원 한도(카드별 상이)</p>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:18px 20px;">
+          <div style="font-weight:900; color:var(--text-primary); margin-bottom:6px;">삼성카드</div>
+          <div style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;">5~10% 청구할인</div>
+          <p style="font-size:.8rem; color:var(--text-muted); line-height:1.55; margin:0;">THE·스타·트레이더 등 · 영화/문화 업종 코드 · 월 한도 적용</p>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:18px 20px;">
+          <div style="font-weight:900; color:var(--text-primary); margin-bottom:6px;">KB국민카드</div>
+          <div style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;">5,000원 청구 캐시백</div>
+          <p style="font-size:.8rem; color:var(--text-muted); line-height:1.55; margin:0;">월 1회 · 5만원 이상 결제 시(전월 실적 조건)</p>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:18px 20px;">
+          <div style="font-weight:900; color:var(--text-primary); margin-bottom:6px;">현대카드</div>
+          <div style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;">M포인트 10% 사용</div>
+          <p style="font-size:.8rem; color:var(--text-muted); line-height:1.55; margin:0;">적립 포인트로 티켓·매점 일부 결제 가능</p>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:18px 20px;">
+          <div style="font-weight:900; color:var(--text-primary); margin-bottom:6px;">롯데카드</div>
+          <div style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;">L.POINT 할인</div>
+          <p style="font-size:.8rem; color:var(--text-muted); line-height:1.55; margin:0;">롯데 계열 제휴 · 포인트+카드 복합 결제</p>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:18px 20px;">
+          <div style="font-weight:900; color:var(--text-primary); margin-bottom:6px;">BC·하나·NH농협</div>
+          <div style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;">5% 전후 즉시/청구</div>
+          <p style="font-size:.8rem; color:var(--text-muted); line-height:1.55; margin:0;">문화·레저 할인 카드 및 체크카드 한도 별도</p>
+        </div>
+      </div>
+
+      <h3 style="color:var(--text-primary); font-size:1.02rem; font-weight:800; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(228,180,0,.2);">
+        <i class="fa-solid fa-mug-hot" style="color:var(--gold); margin-right:8px;"></i>VIP 라운지
+      </h3>
+      <div style="background:linear-gradient(145deg, rgba(228,180,0,.1) 0%, var(--bg-card) 45%); border:1px solid rgba(228,180,0,.28); border-radius:14px; padding:24px 26px; margin-bottom:36px;">
+        <p style="color:var(--text-light); font-size:.9rem; line-height:1.75; margin:0 0 14px;">
+          <strong style="color:var(--gold);">LVIP</strong> 회원 및 당해 연도 <strong style="color:var(--text-primary);">VVIP</strong> 이상(또는 지정 프리미엄 카드 소지자)은  
+          강남·홍대·수원·안양 등 주요 지점의 <strong>VIP 라운지</strong>를 이용할 수 있습니다.
+        </p>
+        <ul style="margin:0; padding-left:1.1rem; color:var(--text-muted); font-size:.86rem; line-height:1.8;">
+          <li>영화 시작 전·후 음료·커피·간단 스낵 무료 셀프 (일 1회, 동반 1인까지)</li>
+          <li>우선 예매 창구·일부 지점 전용 입장 동선</li>
+          <li><strong style="color:var(--text-primary);">라운지 할인</strong>은 멤버십·카드 할인과 별도 안내이며, 현장 매점 일부 제품 추가 할인 쿠폰이 지급될 수 있습니다.</li>
+          <li>운영 시간·입장 기준은 지점별 상이 · VIP ZONE 앱에서 확인</li>
+        </ul>
+      </div>
+
+      <h3 style="color:var(--text-primary); font-size:1.02rem; font-weight:800; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(228,180,0,.2);">
+        <i class="fa-solid fa-clock" style="color:var(--lotte-red); margin-right:8px;"></i>특별 요금 · 우대 할인
+      </h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px; margin-bottom:12px;">
+        <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:14px 16px; border:1px solid rgba(255,255,255,.08);">
+          <strong style="color:var(--gold); font-size:.85rem;">조조</strong>
+          <p style="margin:6px 0 0; font-size:.8rem; color:var(--text-muted);">첫 회차 기준 일반 요금 대비 약 3,000원 할인</p>
+        </div>
+        <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:14px 16px; border:1px solid rgba(255,255,255,.08);">
+          <strong style="color:var(--gold); font-size:.85rem;">심야</strong>
+          <p style="margin:6px 0 0; font-size:.8rem; color:var(--text-muted);">지정 시간대 이후 상영 특가(지점별)</p>
+        </div>
+        <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:14px 16px; border:1px solid rgba(255,255,255,.08);">
+          <strong style="color:var(--gold); font-size:.85rem;">경로·우대</strong>
+          <p style="margin:6px 0 0; font-size:.8rem; color:var(--text-muted);">만 65세 이상 등(신분증 확인)</p>
+        </div>
+        <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:14px 16px; border:1px solid rgba(255,255,255,.08);">
+          <strong style="color:var(--gold); font-size:.85rem;">문화의 날</strong>
+          <p style="margin:6px 0 0; font-size:.8rem; color:var(--text-muted);">매월 마지막 수요일 등 문화가 있는 날 요금</p>
+        </div>
+      </div>
+      <p style="font-size:.78rem; color:rgba(255,255,255,.4); margin:0;">
+        ※ 할인 중복: 일반적으로 <strong style="color:rgba(255,255,255,.55);">카드 즉시할인(또는 청구)</strong> → <strong style="color:rgba(255,255,255,.55);">쿠폰·관람권</strong> 순으로 적용하며, 일부 조합은 제외됩니다.<br>
+        ※ 세현 시네마 가상카드(예매 단계)는 LVIP 전용 최대 할인율이 별도 표시됩니다.
+      </p>
+    </section>
+
+    <!-- VIP 승급 안내 -->
+    <section style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color); padding:40px; margin-bottom:40px;">
+      <h2 style="color:var(--gold); font-size:1.2rem; font-weight:800; margin-bottom:24px;">VIP 승급 안내</h2>
+      <div style="color:var(--text-light); font-size:.88rem; line-height:1.9;">
+        <p>• 2026년 VIP 등급은 2026년 1월 3일부 승급되며, 2026년 12월 31일까지 유지됩니다.</p>
+        <p>• VIP 각 등급별 최저 기준 달성 시, 차년도 다음 등급 또는 다음 연차로 순차적 승급됩니다.</p>
+        <p>• 승급금액은 영화 관람일로부터 2~3일 후 반영됩니다.</p>
+        <p>• 1일 영화예매 3건까지 VIP 승급금액이 반영됩니다.</p>
+        <p style="color:rgba(255,255,255,.4); font-size:.82rem; margin-top:12px;">
+          ※ 매점 금액은 VIP 승급 금액에서 제외됩니다.<br>
+          ※ 관람권 사용, 동일 영화 6회 초과분은 승급 금액 미반영입니다.
+        </p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+</body>
+</html>

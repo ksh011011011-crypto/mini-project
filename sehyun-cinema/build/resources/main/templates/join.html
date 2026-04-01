@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('회원가입')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding:60px 20px; min-height:70vh;">
+  <div style="max-width:540px; margin:0 auto;">
+    <div style="text-align:center; margin-bottom:32px;">
+      <div style="font-size:1.4rem; font-weight:900; color:var(--gold); letter-spacing:3px;">SEHYUN CINEMA</div>
+      <h2 style="color:var(--text-primary); margin-top:8px;">회원가입</h2>
+      <p style="color:var(--text-muted); font-size:.85rem;">순신간에 가입하는 SEHYUN.CINEMA :)</p>
+    </div>
+
+    <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color); padding:40px;">
+      <form th:action="@{/join}" method="post" th:object="${joinDto}" id="join-form">
+        <th:block th:replace="~{fragments/csrf-field :: csrfField}"></th:block>
+        <div class="form-group">
+          <label>아이디 <span style="color:var(--accent-red)">*</span></label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" th:field="*{username}" class="form-input" placeholder="4~20자, 영문·숫자·_" style="flex:1;"/>
+            <button type="button" id="check-username-btn" style="background:rgba(228,180,0,.1); border:1px solid rgba(228,180,0,.3); color:var(--gold); padding:0 16px; border-radius:8px; cursor:pointer; font-size:.8rem; white-space:nowrap;">중복확인</button>
+          </div>
+          <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="field-error"></p>
+          <p id="username-check-msg" style="font-size:.78rem; margin-top:4px;"></p>
+        </div>
+
+        <div class="form-group">
+          <label>비밀번호 <span style="color:var(--accent-red)">*</span></label>
+          <input type="password" th:field="*{password}" class="form-input" placeholder="8자리 이상"/>
+          <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="field-error"></p>
+        </div>
+
+        <div class="form-group">
+          <label>이름 <span style="color:var(--accent-red)">*</span></label>
+          <input type="text" th:field="*{name}" class="form-input" placeholder="이름을 입력해 주세요"/>
+          <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="field-error"></p>
+        </div>
+
+        <div class="form-group">
+          <label>이메일 <span style="color:var(--accent-red)">*</span></label>
+          <input type="email" th:field="*{email}" class="form-input" placeholder="example@email.com"/>
+          <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="field-error"></p>
+        </div>
+
+        <div class="form-group">
+          <label>휴대폰 번호</label>
+          <input type="tel" th:field="*{phone}" class="form-input" placeholder="01012345678 (- 없이)"/>
+          <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="field-error"></p>
+        </div>
+
+        <div class="form-group">
+          <label>생년월일</label>
+          <input type="date" th:field="*{birthDate}" class="form-input"/>
+        </div>
+
+        <div style="margin:20px 0; padding:14px; background:rgba(255,255,255,.03); border-radius:8px; border:1px solid rgba(255,255,255,.06);">
+          <p style="font-size:.75rem; color:var(--text-muted); line-height:1.6;">
+            ※ 아동(만 14세 미만)은 부모님(법정대리인) 동의가 필요합니다.<br>
+            ※ 법인 명의 휴대폰 사용자는 통신사 지점 방문 후 인증 가능합니다.
+          </p>
+        </div>
+
+        <button type="submit" class="btn-submit">회원가입</button>
+      </form>
+
+      <div style="text-align:center; margin-top:16px;">
+        <a th:href="@{/login}" style="font-size:.82rem; color:var(--text-muted);">이미 계정이 있으신가요? 로그인</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+document.getElementById('check-username-btn').addEventListener('click', function() {
+  const username = document.querySelector('[name="username"]').value;
+  if (!username || username.length < 4) {
+    document.getElementById('username-check-msg').style.color = '#e83333';
+    document.getElementById('username-check-msg').textContent = '아이디를 4자 이상 입력해 주세요.';
+    return;
+  }
+  fetch('/api/check-username?username=' + encodeURIComponent(username))
+    .then(r => r.json())
+    .then(data => {
+      const msg = document.getElementById('username-check-msg');
+      if (data.available) {
+        msg.style.color = '#4caf50';
+        msg.textContent = '사용 가능한 아이디입니다.';
+      } else {
+        msg.style.color = '#e83333';
+        msg.textContent = '이미 사용 중인 아이디입니다.';
+      }
+    });
+});
+/*]]>*/
+</script>
+</body>
+</html>

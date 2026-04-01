@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "SehyunCinema (local H2)",
+      "request": "launch",
+      "mainClass": "com.sehyun.cinema.SehyunCinemaApplication",
+      "projectName": "sehyun-cinema",
+      "vmArgs": "-Dspring.profiles.active=local",
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "local"
+      }
+    }
+  ]
+}

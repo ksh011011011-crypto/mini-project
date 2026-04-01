@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${title} + ' - 세현 시네마'">세현 시네마</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+
+<header th:fragment="header">
+  <header id="main-header" class="main-header">
+    <!-- 유틸 바 -->
+    <div class="header-util">
+      <div class="container-xl d-flex justify-content-between align-items-center">
+        <div class="header-sns">
+          <a href="https://youtube.com" target="_blank" class="sns-link" aria-label="유튜브"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://facebook.com" target="_blank" class="sns-link" aria-label="페이스북"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://instagram.com" target="_blank" class="sns-link" aria-label="인스타그램"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+        <div class="header-util-links">
+          <a th:href="@{/membership}">멤버십</a>
+          <a th:href="@{/customer/faq}">고객센터</a>
+          <a th:href="@{/customer/group}">단체관/대관문의</a>
+          <th:block sec:authorize="isAuthenticated()">
+            <a th:href="@{/mypage}" class="btn-login" sec:authentication="name"></a>
+            <form th:action="@{/logout}" method="post" style="display:inline; margin:0;">
+              <th:block th:replace="~{fragments/csrf-field :: csrfField}"></th:block>
+              <button type="submit" class="btn-join" style="border:none; background:transparent; cursor:pointer; font:inherit; color:inherit; padding:0;">로그아웃</button>
+            </form>
+          </th:block>
+          <th:block sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="btn-login">로그인</a>
+            <a th:href="@{/join}" class="btn-join">회원가입</a>
+          </th:block>
+        </div>
+      </div>
+    </div>
+    <!-- GNB -->
+    <div class="header-nav-wrap">
+      <div class="container-xl d-flex justify-content-between align-items-center">
+        <a th:href="@{/}" class="header-logo">
+          <span class="logo-main">SEHYUN</span>
+          <span class="logo-sub">CINEMA</span>
+        </a>
+        <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        <nav class="gnb" id="gnb">
+          <ul class="gnb-list">
+            <li class="gnb-item has-dropdown">
+              <a th:href="@{/booking}" class="gnb-link">예매</a>
+              <ul class="gnb-dropdown">
+                <li><a th:href="@{/booking}">예매하기</a></li>
+                <li><a th:href="@{/schedule}">상영시간표</a></li>
+                <li><a th:href="@{/membership}">할인안내</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a th:href="@{/movies}" class="gnb-link">영화</a>
+              <ul class="gnb-dropdown">
+                <li><a th:href="@{/movies(status='SHOWING')}">현재상영작</a></li>
+                <li><a th:href="@{/movies(status='UPCOMING')}">개봉예정작</a></li>
+                <li><a th:href="@{/movies(status='ARTE')}">아르떼(Arte)</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item">
+              <a th:href="@{/store}" class="gnb-link">매점·스토어</a>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a href="#" class="gnb-link">영화관</a>
+              <ul class="gnb-dropdown">
+                <li><a th:href="@{/schedule}">상영시간표</a></li>
+                <li><a th:href="@{/movies(status='SHOWING')}">현재상영작</a></li>
+                <li><a th:href="@{/special-hall}">스페셜관 안내</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a th:href="@{/events}" class="gnb-link">이벤트</a>
+              <ul class="gnb-dropdown">
+                <li><a th:href="@{/events}">진행중 이벤트</a></li>
+                <li><a th:href="@{/customer/notice}">공지사항</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a th:href="@{/membership}" class="gnb-link">멤버십</a>
+              <ul class="gnb-dropdown">
+                <li><a th:href="@{/membership}">VIP ZONE</a></li>
+                <li><a href="#">틴틴클럽</a></li>
+              </ul>
+            </li>
+            <li class="gnb-item has-dropdown">
+              <a th:href="@{/customer/faq}" class="gnb-link">고객센터</a>
+              <ul class="gnb-dropdown">
+                <li><a th:href="@{/customer/faq}">FAQ</a></li>
+                <li><a th:href="@{/customer/notice}">공지사항</a></li>
+                <li><a th:href="@{/customer/inquiry}">1:1 문의</a></li>
+                <li><a th:href="@{/customer/chat}">AI 상담톡</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+</header>
+
+<footer th:fragment="footer">
+  <footer class="main-footer">
+    <div class="container-xl">
+      <div class="footer-top">
+        <div class="footer-logo-area">
+          <div class="footer-logo">
+            <span class="footer-logo-main">SEHYUN</span>
+            <span class="footer-logo-sub">CINEMA</span>
+          </div>
+          <div class="footer-family-badge"><i class="fa-solid fa-heart"></i><span>가족친화 인증기업</span></div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-link-group">
+            <strong>서비스</strong>
+            <a th:href="@{/booking}">영화 예매</a>
+            <a th:href="@{/schedule}">상영시간표</a>
+            <a th:href="@{/store}">매점·스토어</a>
+            <a th:href="@{/special-hall}">스페셜관 안내</a>
+            <a th:href="@{/membership}">VIP 멤버십</a>
+          </div>
+          <div class="footer-link-group">
+            <strong>고객지원</strong>
+            <a th:href="@{/customer/faq}">FAQ</a>
+            <a th:href="@{/customer/notice}">공지사항</a>
+            <a th:href="@{/customer/inquiry}">1:1 문의</a>
+          </div>
+          <div class="footer-link-group">
+            <strong>회사 정보</strong>
+            <a href="#">이용약관</a>
+            <a href="#">개인정보처리방침</a>
+            <a th:href="@{/customer/group}">단체관/대관문의</a>
+          </div>
+        </div>
+      </div>
+      <hr class="footer-divider"/>
+      <div class="footer-bottom">
+        <div class="footer-info">
+          <p><strong>세현시네마(주)</strong> | 대표이사 : 김세현</p>
+          <p>영화관·매점: 경기도 안양시 동안구 부림로 55 <strong>시네마몰 9층~10층</strong> (세현 시네마)</p>
+          <p>사무실: 309동 6층 3호</p>
+          <p>전화 : 010-3331-0292 &nbsp;|&nbsp; 이메일 : lms990302@naver.com</p>
+        </div>
+        <p class="footer-copyright">Copyright &copy; Sehyun movie. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/app.js}"></script>
+</footer>
+</html>

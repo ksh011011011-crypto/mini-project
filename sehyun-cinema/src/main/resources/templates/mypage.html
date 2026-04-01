@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('마이페이지')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="page-mypage" style="padding:50px 0 80px; color:#e8e8f0;">
+  <div class="container-xl" style="max-width:860px;">
+    <!-- 예매 직후 안내 -->
+    <div th:if="${flashBookingId != null}"
+         style="background:linear-gradient(135deg, rgba(228,180,0,.15), rgba(76,175,80,.12)); border:1px solid rgba(228,180,0,.35); border-radius:16px; padding:22px 24px; margin-bottom:24px;">
+      <p style="color:var(--gold); font-size:.75rem; font-weight:800; letter-spacing:2px; margin-bottom:8px;">결제 · 예매 완료</p>
+      <p style="color:var(--text-primary); font-size:1.05rem; font-weight:800; margin-bottom:6px;">예매가 정상 처리되었습니다.</p>
+      <p style="color:var(--text-muted); font-size:.85rem; margin-bottom:16px;">
+        예매번호 <strong style="color:var(--text-primary);" th:text="'SC-' + ${flashBookingId}">SC-0</strong>
+      </p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <a th:href="@{/booking/complete/{id}(id=${flashBookingId})}" class="btn-hero-secondary" style="padding:10px 20px; border-radius:8px; font-size:.88rem;">예매 상세(영수증)</a>
+        <a th:href="@{/mypage/bookings}" class="btn-hero-primary" style="padding:10px 20px; border-radius:8px; font-size:.88rem;"><i class="fa-solid fa-ticket" style="margin-right:6px;"></i>예매 내역 전체</a>
+      </div>
+    </div>
+
+    <div th:if="${success != null and flashBookingId == null}"
+         style="background:rgba(76,175,80,.1); border:1px solid rgba(76,175,80,.35); color:#a5d6a7; padding:14px 18px; border-radius:10px; margin-bottom:20px; font-size:.9rem;"
+         th:text="${success}"></div>
+
+    <!-- 등급 카드 -->
+    <div th:class="'grade-card grade-' + ${#strings.toLowerCase(member.grade)}"
+         style="border-radius:16px; padding:36px; margin-bottom:32px; position:relative; overflow:hidden; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
+      <div>
+        <p style="font-size:.8rem; letter-spacing:3px; opacity:.7; margin-bottom:6px;">MY MEMBERSHIP</p>
+        <h2 th:text="${member.grade}" style="font-size:2.2rem; font-weight:900; letter-spacing:3px; margin-bottom:4px;">일반</h2>
+        <p th:text="${member.name} + '님, 안녕하세요!'" style="font-size:1rem; opacity:.85;"></p>
+      </div>
+      <div style="text-align:right;">
+        <p style="font-size:.8rem; opacity:.7; margin-bottom:4px;">누적 결제 금액</p>
+        <p style="font-size:1.6rem; font-weight:900;"
+           th:text="${#numbers.formatInteger(member.totalSpent,1,'COMMA')} + '원'">0원</p>
+        <p th:if="${nextGrade != ''}" style="font-size:.78rem; opacity:.7; margin-top:4px;"
+           th:text="${nextGrade} + ' 까지 ' + ${#numbers.formatInteger(remaining,1,'COMMA')} + '원 남음'"></p>
+        <p th:if="${nextGrade == ''}" style="font-size:.78rem; opacity:.7; margin-top:4px;">최고 등급 달성!</p>
+      </div>
+    </div>
+
+    <!-- 메뉴 -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; margin-bottom:36px;">
+      <a th:href="@{/mypage/bookings}" class="mypage-menu-card">
+        <i class="fa-solid fa-ticket"></i><span>예매 내역</span>
+      </a>
+      <a th:href="@{/mypage/hearts}" class="mypage-menu-card">
+        <i class="fa-solid fa-heart"></i><span>찜한 영화</span>
+      </a>
+      <a href="#" class="mypage-menu-card">
+        <i class="fa-solid fa-tag"></i><span>쿠폰함</span>
+      </a>
+      <a th:href="@{/customer/inquiry/my}" class="mypage-menu-card">
+        <i class="fa-solid fa-comments"></i><span>1:1 문의</span>
+      </a>
+      <a th:href="@{/customer/group}" class="mypage-menu-card">
+        <i class="fa-solid fa-people-group"></i><span>단체문의</span>
+      </a>
+      <a th:href="@{/membership}" class="mypage-menu-card">
+        <i class="fa-solid fa-crown"></i><span>멤버십 혜택</span>
+      </a>
+      <a th:href="@{/customer/chat}" class="mypage-menu-card">
+        <i class="fa-solid fa-robot"></i><span>AI 상담톡</span>
+      </a>
+    </div>
+
+    <!-- 정보 수정 -->
+    <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color); padding:32px;">
+      <h3 style="color:var(--text-primary); font-size:1rem; font-weight:700; margin-bottom:20px;">
+        <i class="fa-solid fa-user" style="color:var(--gold); margin-right:8px;"></i>내 정보 관리
+      </h3>
+      <form th:action="@{/mypage/update}" method="post">
+        <th:block th:replace="~{fragments/csrf-field :: csrfField}"></th:block>
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px;">
+          <div class="form-group">
+            <label>이름</label>
+            <input type="text" name="name" class="form-input" th:value="${member.name}"/>
+          </div>
+          <div class="form-group">
+            <label>이메일</label>
+            <input type="email" name="email" class="form-input" th:value="${member.email}"/>
+          </div>
+          <div class="form-group">
+            <label>휴대폰</label>
+            <input type="tel" name="phone" class="form-input" th:value="${member.phone}"/>
+          </div>
+          <div class="form-group">
+            <label>아이디</label>
+            <input type="text" class="form-input" th:value="${member.username}" disabled
+                   style="opacity:.5; cursor:not-allowed;"/>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit" style="width:auto; padding:10px 28px; margin-top:8px;">정보 수정</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('공지사항')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding:50px 0 80px;">
+  <div class="container-xl">
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:1.8rem; font-weight:900; color:var(--text-primary); margin-bottom:8px;">고객센터</h1>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;">
+        <a th:href="@{/customer/faq}" class="cs-tab">FAQ</a>
+        <a th:href="@{/customer/notice}" class="cs-tab active">공지사항</a>
+        <a th:href="@{/customer/inquiry}" class="cs-tab">1:1 문의</a>
+        <a th:href="@{/customer/chat}" class="cs-tab">AI 상담톡</a>
+      </div>
+    </div>
+
+    <!-- 카테고리 탭 -->
+    <div style="display:flex; gap:8px; margin-bottom:20px;">
+      <a th:href="@{/customer/notice(category='전체')}" th:class="${category == '전체'} ? 'faq-cat-btn active' : 'faq-cat-btn'">전체 공지</a>
+      <a th:href="@{/customer/notice(category='영화관')}" th:class="${category == '영화관'} ? 'faq-cat-btn active' : 'faq-cat-btn'">영화관</a>
+      <a th:href="@{/customer/notice(category='서울')}" th:class="${category == '서울'} ? 'faq-cat-btn active' : 'faq-cat-btn'">서울</a>
+      <a th:href="@{/customer/notice(category='경기/인천')}" th:class="${category == '경기/인천'} ? 'faq-cat-btn active' : 'faq-cat-btn'">경기/인천</a>
+    </div>
+
+    <!-- 검색 -->
+    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; gap:8px;">
+      <select style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--text-primary); padding:8px 12px; border-radius:6px; font-size:.85rem;">
+        <option>제목</option><option>내용</option><option>제목+내용</option>
+      </select>
+      <form th:action="@{/customer/notice}" method="get" style="display:flex; gap:8px; flex:1;">
+        <input type="hidden" name="category" th:value="${category}"/>
+        <input type="text" name="keyword" th:value="${keyword}" class="search-input" placeholder="검색어를 입력해주세요" style="flex:1;"/>
+        <button type="submit" class="search-btn" style="border-radius:8px; padding:0 20px;">검색</button>
+      </form>
+    </div>
+
+    <!-- 공지 목록 -->
+    <div style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,255,255,.06); overflow:hidden;">
+      <div style="display:grid; grid-template-columns:80px 100px 1fr 120px; padding:12px 20px; background:rgba(255,255,255,.04); font-size:.78rem; font-weight:700; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,.06);">
+        <span>번호</span><span>구분</span><span>제목</span><span style="text-align:right;">등록일</span>
+      </div>
+
+      <div th:each="notice : ${notices.content}"
+           style="display:grid; grid-template-columns:80px 100px 1fr 120px; padding:14px 20px; border-bottom:1px solid rgba(255,255,255,.04); align-items:center;">
+        <span th:if="${notice.isImportant}" style="color:var(--accent-red); font-weight:900; font-size:1rem;">!</span>
+        <span th:if="${!notice.isImportant}" style="color:var(--text-muted); font-size:.82rem;"
+              th:text="${notice.id}"></span>
+        <span style="color:var(--text-muted); font-size:.82rem;" th:text="${notice.category}"></span>
+        <a th:href="@{/customer/notice/{id}(id=${notice.id})}"
+           style="color:var(--text-light); font-size:.88rem; transition:color .2s;"
+           th:text="${notice.title}" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-light)'"></a>
+        <span style="color:var(--text-muted); font-size:.78rem; text-align:right;"
+              th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}"></span>
+      </div>
+
+      <div th:if="${notices.content.empty}" style="padding:40px; text-align:center; color:var(--text-muted);">
+        공지사항이 없습니다.
+      </div>
+    </div>
+
+    <!-- 페이지네이션 -->
+    <div style="display:flex; justify-content:center; gap:6px; margin-top:20px;">
+      <th:block th:each="i : ${#numbers.sequence(0, notices.totalPages - 1)}">
+        <a th:href="@{/customer/notice(category=${category},page=${i})}"
+           th:class="${i == currentPage} ? 'page-btn active' : 'page-btn'"
+           th:text="${i + 1}"></a>
+      </th:block>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/header :: footer}"></div>
+</body>
+</html>

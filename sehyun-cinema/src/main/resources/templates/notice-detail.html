@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head(${notice.title})}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main style="padding:50px 0 80px;">
+  <div class="container-xl" style="max-width:860px;">
+    <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color); overflow:hidden;">
+      <div style="padding:32px 36px; border-bottom:1px solid rgba(255,255,255,.06);">
+        <h1 style="font-size:1.3rem; font-weight:900; color:var(--text-primary); margin-bottom:16px;"
+            th:text="${notice.title}"></h1>
+        <div style="display:flex; gap:24px; font-size:.82rem; color:var(--text-muted);">
+          <span>영화관 &nbsp;<strong th:text="${notice.category}" style="color:var(--text-light);"></strong></span>
+          <span>등록일 &nbsp;<strong th:text="${#temporals.format(notice.createdAt,'yyyy-MM-dd')}" style="color:var(--text-light);"></strong></span>
+          <span>조회수 &nbsp;<strong th:text="${notice.viewCount}" style="color:var(--text-light);"></strong></span>
+        </div>
+      </div>
+      <div style="padding:32px 36px; color:var(--text-light); font-size:.9rem; line-height:1.9; white-space:pre-wrap;"
+           th:text="${notice.content}"></div>
+    </div>
+
+    <div style="margin-top:16px; display:flex; justify-content:center;">
+      <a th:href="@{/customer/notice}" class="btn-hero-secondary" style="padding:10px 28px; border-radius:8px;">목록으로</a>
+    </div>
+  </div>
+</main>
+<div th:replace="~{fragments/header :: footer}"></div>
+</body>
+</html>
