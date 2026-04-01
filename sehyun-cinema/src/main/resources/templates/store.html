@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/header :: head('매점·스토어')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
@@ -9,13 +10,12 @@
     <p style="color:var(--gold); letter-spacing:4px; font-size:.75rem; margin-bottom:10px;">SNACK · STORE</p>
     <h1 style="font-size:2.2rem; font-weight:900; color:var(--text-primary); margin-bottom:12px;">세현 매점 스토어</h1>
     <p style="color:var(--text-muted); font-size:.95rem; max-width:640px; margin:0 auto; line-height:1.65;">
-      관람 전·후 즐길 수 있는 <strong style="color:var(--text-primary);">팝콘·음료·콤보</strong> 메뉴를 미리 확인하세요.<br/>
-      <span style="color:var(--gold); font-weight:700;">온라인 예매는 영화 티켓만</span> 결제되며, <strong>매점 상품은 현장에서 결제</strong>합니다.
+      관람 전·후 즐길 수 있는 <strong style="color:var(--text-primary);">팝콘·음료·콤보</strong>를 담고 <strong style="color:var(--gold);">온라인에서 결제</strong>할 수 있습니다.<br/>
+      <span style="font-size:.85rem; opacity:.85;">실제 PG 연동 데모가 아닌 <strong style="color:var(--text-primary);">서버 검증·주문 저장</strong>만 수행합니다. 수령은 매점·키오스크에서 주문번호로 가능하다고 가정합니다.</span>
     </p>
   </section>
 
   <div class="container-xl" style="padding-top:36px;">
-    <!-- 위치 · 결제 안내 -->
     <div style="display:grid; gap:14px; margin-bottom:32px;">
       <div style="background:rgba(228,180,0,.1); border:1px solid rgba(228,180,0,.35); border-radius:14px; padding:20px 22px;">
         <div style="display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;">
@@ -23,32 +23,25 @@
           <div style="flex:1; min-width:220px;">
             <p style="font-weight:800; color:var(--text-primary); margin-bottom:6px;">안양 평촌 시네마몰 9층 ~ 10층</p>
             <p style="color:var(--text-muted); font-size:.88rem; line-height:1.65; margin:0;">
-              세현 시네마 상영관·매점·매표소는 <strong style="color:var(--text-primary);">시네마몰 9층·10층</strong>에 있습니다. (확장 오픈 구간에 따라 일부 매장만 운영될 수 있습니다.)
+              세현 시네마 상영관·매점·매표소는 <strong style="color:var(--text-primary);">시네마몰 9층·10층</strong>에 있습니다.
             </p>
           </div>
         </div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:20px 22px;">
         <div style="display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;">
-          <i class="fa-solid fa-cash-register" style="color:var(--lotte-red); font-size:1.35rem; margin-top:2px;"></i>
+          <i class="fa-solid fa-credit-card" style="color:var(--lotte-red); font-size:1.35rem; margin-top:2px;"></i>
           <div style="flex:1; min-width:220px;">
-            <p style="font-weight:800; color:var(--text-primary); margin-bottom:6px;">팝콘·음료 — 매표소 &amp; 매점 키오스크에서 결제</p>
+            <p style="font-weight:800; color:var(--text-primary); margin-bottom:6px;">온라인 결제 · 마이페이지에서 내역 확인</p>
             <p style="color:var(--text-muted); font-size:.88rem; line-height:1.65; margin:0;">
-              본 페이지는 <strong style="color:var(--text-primary);">메뉴·가격 안내·실적(장바구니) 연습용</strong>입니다.<br/>
-              실제 결제는 영화관 <strong>매표소</strong> 또는 <strong>매점 앞 키오스크</strong>에서 카드·간편결제로 진행해 주세요. (현장에서 동일 메뉴로 주문 가능)
+              로그인 후 <strong style="color:var(--text-primary);">결제하기</strong>를 누르면 금액이 서버에서 다시 계산되며, 완료 후 <strong style="color:var(--gold);">매점 주문</strong> 메뉴에 저장됩니다.
             </p>
           </div>
         </div>
       </div>
-      <div style="background:rgba(80,120,255,.08); border:1px solid rgba(120,160,255,.25); border-radius:14px; padding:16px 20px; font-size:.86rem; color:var(--text-muted); line-height:1.6;">
-        <i class="fa-solid fa-globe" style="color:#8ab4ff; margin-right:8px;"></i>
-        <strong style="color:var(--text-primary);">홈페이지·앱</strong>으로는 영화 예매가 가능하고,
-        <strong style="color:var(--text-primary);">현장 매표소</strong>에서도 동일 시간대 좌석 예매가 가능합니다. 매점만 단독 주문은 키오스크·매표를 이용해 주세요.
-      </div>
     </div>
 
     <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;">
-      <!-- 메뉴 그리드 -->
       <div style="flex:1; min-width:280px;">
         <h2 style="color:var(--gold); font-size:1.1rem; font-weight:800; margin-bottom:18px;">
           <i class="fa-solid fa-burger" style="margin-right:8px;"></i>매점 메뉴
@@ -56,23 +49,42 @@
         <div id="store-products" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;"></div>
       </div>
 
-      <!-- 장바구니 (로컬·안내용) -->
       <aside style="width:100%; max-width:340px; flex-shrink:0; position:sticky; top:24px;">
         <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:20px;">
           <h3 style="font-size:1rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">
-            <i class="fa-solid fa-basket-shopping" style="color:var(--gold); margin-right:8px;"></i>담은 메뉴 (연습용)
+            <i class="fa-solid fa-basket-shopping" style="color:var(--gold); margin-right:8px;"></i>장바구니
           </h3>
           <ul id="cart-list" style="list-style:none; padding:0; margin:0 0 14px; min-height:72px; font-size:.88rem; color:var(--text-muted);"></ul>
           <div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid var(--border-color); margin-bottom:14px;">
-            <span style="font-size:.85rem; color:var(--text-muted);">합계 (참고)</span>
+            <span style="font-size:.85rem; color:var(--text-muted);">합계</span>
             <span id="cart-total" style="font-size:1.15rem; font-weight:900; color:var(--gold);">0원</span>
           </div>
-          <button type="button" id="cart-clear" class="btn-submit" style="width:100%; padding:10px; opacity:.85; font-size:.85rem; background:transparent; border:1px solid var(--border-color); color:var(--text-muted);">
+
+          <label style="display:block; font-size:.78rem; color:var(--text-muted); margin-bottom:6px;">결제 수단</label>
+          <select id="pay-method" class="form-input" style="width:100%; margin-bottom:14px; padding:10px; border-radius:8px; background:rgba(0,0,0,.25); border:1px solid var(--border-color); color:var(--text-primary); font-size:.88rem;">
+            <option value="CARD">신용·체크카드</option>
+            <option value="KAKAO">카카오페이</option>
+            <option value="NAVER">네이버페이</option>
+            <option value="TOSS">토스페이</option>
+            <option value="PHONE">휴대폰 결제</option>
+          </select>
+
+          <div sec:authorize="isAuthenticated()">
+            <button type="button" id="btn-checkout" class="btn-submit" style="width:100%; padding:12px; font-size:.95rem; font-weight:800;">
+              <i class="fa-solid fa-lock" style="margin-right:8px;"></i>결제하기
+            </button>
+          </div>
+          <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="btn-submit" style="display:block; width:100%; padding:12px; font-size:.95rem; font-weight:800; text-align:center; text-decoration:none; box-sizing:border-box;">
+              로그인 후 결제
+            </a>
+          </div>
+
+          <p id="pay-msg" style="display:none; font-size:.82rem; margin-top:12px; padding:10px; border-radius:8px; line-height:1.5;"></p>
+
+          <button type="button" id="cart-clear" class="btn-submit" style="width:100%; padding:10px; margin-top:10px; opacity:.85; font-size:.85rem; background:transparent; border:1px solid var(--border-color); color:var(--text-muted);">
             비우기
           </button>
-          <p style="font-size:.8rem; color:rgba(255,255,255,.45); margin:14px 0 0; line-height:1.5;">
-            결제는 하지 않습니다. 매표소·키오스크에서 주문하실 때 이 목록을 참고해 주세요.
-          </p>
         </div>
       </aside>
     </div>
@@ -96,14 +108,22 @@
     { id:'hotdog', name:'핫도그', price:5000, desc:'케첩·머스타드', icon:'fa-hotdog' },
     { id:'pretzel', name:'프레첼', price:4500, desc:'고소한 빵 스낵', icon:'fa-bread-slice' }
   ];
-  const fixed = PRODUCTS.map((p, i) => ({ ...p, id: p.id + '-' + i }));
   const grid = document.getElementById('store-products');
   const cartList = document.getElementById('cart-list');
   const cartTotal = document.getElementById('cart-total');
+  const payMsg = document.getElementById('pay-msg');
   let cart = [];
 
   function formatWon(n) {
     return new Intl.NumberFormat('ko-KR').format(n) + '원';
+  }
+
+  function showPayMsg(text, ok) {
+    payMsg.style.display = 'block';
+    payMsg.style.background = ok ? 'rgba(76,175,80,.12)' : 'rgba(244,67,54,.12)';
+    payMsg.style.border = '1px solid ' + (ok ? 'rgba(76,175,80,.35)' : 'rgba(244,67,54,.35)');
+    payMsg.style.color = ok ? '#a5d6a7' : '#ffcdd2';
+    payMsg.innerHTML = text;
   }
 
   function renderCart() {
@@ -112,7 +132,7 @@
     if (cart.length === 0) {
       cartList.innerHTML = '<li style="opacity:.6;">담긴 상품이 없습니다. 메뉴에서 <strong style="color:var(--text-primary);">담기</strong>를 눌러 보세요.</li>';
     } else {
-      cart.forEach((line, idx) => {
+      cart.forEach((line) => {
         sum += line.price * line.qty;
         const li = document.createElement('li');
         li.style.cssText = 'display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.06); color:var(--text-light);';
@@ -128,10 +148,11 @@
     const found = cart.find(x => x.id === p.id);
     if (found) found.qty += 1;
     else cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+    payMsg.style.display = 'none';
     renderCart();
   }
 
-  fixed.forEach(p => {
+  PRODUCTS.forEach(p => {
     const card = document.createElement('div');
     card.style.cssText = 'background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px;';
     card.innerHTML =
@@ -156,8 +177,48 @@
 
   document.getElementById('cart-clear').onclick = function() {
     cart = [];
+    payMsg.style.display = 'none';
     renderCart();
   };
+
+  const btnCheckout = document.getElementById('btn-checkout');
+  if (btnCheckout) {
+    btnCheckout.onclick = async function() {
+      payMsg.style.display = 'none';
+      if (!cart.length) {
+        showPayMsg('담긴 메뉴가 없습니다.', false);
+        return;
+      }
+      const method = document.getElementById('pay-method').value;
+      const items = cart.map(function(c) { return { productId: c.id, qty: c.qty }; });
+      btnCheckout.disabled = true;
+      try {
+        const res = await fetch('/api/store/checkout', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ items: items, paymentMethod: method })
+        });
+        const data = await res.json().catch(function() { return {}; });
+        if (res.status === 401) {
+          showPayMsg('로그인이 필요합니다. 로그인 후 다시 시도해 주세요.', false);
+          return;
+        }
+        if (!res.ok || !data.ok) {
+          showPayMsg((data && data.message) ? data.message : '결제에 실패했습니다.', false);
+          return;
+        }
+        cart = [];
+        renderCart();
+        const link = '<a href="/mypage/store-orders" style="color:var(--gold); font-weight:700;">매점 주문 내역</a>';
+        showPayMsg('결제가 완료되었습니다. 주문번호 <strong>SN-' + data.orderId + '</strong> · ' + link, true);
+      } catch (e) {
+        showPayMsg('네트워크 오류로 결제를 완료하지 못했습니다.', false);
+      } finally {
+        btnCheckout.disabled = false;
+      }
+    };
+  }
 })();
 </script>
 </body>

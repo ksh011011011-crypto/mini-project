@@ -1,10 +1,13 @@
 package com.sehyun.cinema.controller;
 
+import com.sehyun.cinema.dto.StoreCheckoutRequest;
 import com.sehyun.cinema.entity.Member;
 import com.sehyun.cinema.entity.Movie;
+import com.sehyun.cinema.entity.StoreOrder;
 import com.sehyun.cinema.service.CustomerService;
 import com.sehyun.cinema.service.MemberService;
 import com.sehyun.cinema.service.MovieService;
+import com.sehyun.cinema.service.StoreOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,7 @@ public class ApiController {
     private final MovieService movieService;
     private final MemberService memberService;
     private final CustomerService customerService;
+    private final StoreOrderService storeOrderService;
 
     // 하트 토글
     @PostMapping("/movies/{id}/heart")
@@ -89,5 +93,32 @@ public class ApiController {
     public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam String username) {
         boolean available = !memberService.isUsernameDuplicate(username);
         return ResponseEntity.ok(Map.of("available", available));
+    }
+
+    /** 매점 온라인 결제(데모) — 금액·메뉴는 서버에서 재검증 */
+    @PostMapping("/store/checkout")
+    public ResponseEntity<Map<String, Object>> storeCheckout(
+            @RequestBody StoreCheckoutRequest body,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            return ResponseEntity.status(401).body(Map.of("message", "로그인이 필요합니다."));
+        }
+        try {
+            Member member = memberService.getByUsername(authentication.getName());
+            StoreOrder order = storeOrderService.checkout(member, body);
+            return ResponseEntity.ok(Map.of(
+                    "ok", true,
+                    "orderId", order.getId(),
+                    "paymentRef", order.getPaymentRef() != null ? order.getPaymentRef() : "",
+                    "totalPrice", order.getTotalPrice(),
+                    "message", "결제가 완료되었습니다."
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "ok", false,
+                    "message", e.getMessage()
+            ));
+        }
     }
 }

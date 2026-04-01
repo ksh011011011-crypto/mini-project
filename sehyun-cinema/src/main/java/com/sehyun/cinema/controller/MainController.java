@@ -65,7 +65,7 @@ public class MainController {
         return "schedule";
     }
 
-    /** 매점·스낵 메뉴(안내용). 실제 결제는 현장 매표소·키오스크 */
+    /** 매점·스낵 메뉴 + 온라인 데모 결제 */
     @GetMapping("/store")
     public String store() {
         return "store";

@@ -4,9 +4,11 @@ import com.sehyun.cinema.dto.MemberJoinDto;
 import com.sehyun.cinema.entity.Booking;
 import com.sehyun.cinema.entity.Member;
 import com.sehyun.cinema.entity.Movie;
+import com.sehyun.cinema.entity.StoreOrder;
 import com.sehyun.cinema.service.BookingService;
 import com.sehyun.cinema.service.MemberService;
 import com.sehyun.cinema.service.MovieService;
+import com.sehyun.cinema.service.StoreOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,7 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class MemberController {
     private final MemberService memberService;
     private final BookingService bookingService;
     private final MovieService movieService;
+    private final StoreOrderService storeOrderService;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(required = false) String error,
@@ -91,6 +96,20 @@ public class MemberController {
         model.addAttribute("member", member);
         model.addAttribute("movies", hearts);
         return "mypage-hearts";
+    }
+
+    @GetMapping("/mypage/store-orders")
+    public String myStoreOrders(Authentication authentication, Model model) {
+        Member member = memberService.getByUsername(authentication.getName());
+        List<StoreOrder> orders = storeOrderService.getMyOrders(member);
+        Map<Long, List<Map<String, Object>>> orderLineMap = new LinkedHashMap<>();
+        for (StoreOrder o : orders) {
+            orderLineMap.put(o.getId(), storeOrderService.parseLinesJson(o));
+        }
+        model.addAttribute("member", member);
+        model.addAttribute("storeOrders", orders);
+        model.addAttribute("orderLineMap", orderLineMap);
+        return "mypage-store-orders";
     }
 
     @GetMapping("/mypage/reviews")
