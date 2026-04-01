@@ -1,9 +1,0 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<!-- 모델 _csrf (CsrfModelAdvice + Spring Security) 사용 — #request 미지원 환경 대비 -->
-<th:block th:fragment="csrfField">
-  <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-</th:block>
-</body>
-</html>

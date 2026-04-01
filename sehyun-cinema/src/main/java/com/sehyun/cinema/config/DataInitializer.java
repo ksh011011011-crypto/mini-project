@@ -116,12 +116,14 @@ public class DataInitializer implements CommandLineRunner {
         m.put("분노의 질주: 파이널", "https://image.tmdb.org/t/p/w500/fiVW06jE7z9YnO4trhaMEdclSiC.jpg");
         m.put("앤트맨과 와스프: 퀀터매니아", "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg");
         m.put("스파이더맨: 어크로스 더 유니버스", "https://image.tmdb.org/t/p/w500/gj6Gy5VQlL4vO3q9dZcNXZjIiID.jpg");
-        m.put("듄: 파트 투", "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8zp05NQxs1.jpg");
+        /* 공식 포스터 — static/images/posters/dune-part-two.png (사용자 제공) */
+        m.put("듄: 파트 투", "/images/posters/dune-part-two.png");
         m.put("아바타: 물의 길", "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg");
         /* 오피스 스페이스(TMDB #1542) — 직장 코미디 대표 포스터 */
         /* 공식 포스터 — static/images/posters/mad-dance-office.png (사용자 제공) */
         m.put("매드 댄스 오피스", "/images/posters/mad-dance-office.png");
-        m.put("초속 5센티미터", "https://image.tmdb.org/t/p/w500/7copY2VsRqNVFfOfCwA6sFAMf7Z.jpg");
+        /* 공식 포스터 — static/images/posters/chosok-5centimeter.png (사용자 제공) */
+        m.put("초속 5센티미터", "/images/posters/chosok-5centimeter.png");
         m.put("프로젝트 헤일메리", "https://image.tmdb.org/t/p/w500/qqGpVVZk2KD1lAvccgTU4Z6nh1H.jpg");
         m.put("왕과 사는 남자", "https://image.tmdb.org/t/p/w500/zEH1FQTEnRY05i8gQIYdR10Vp92.jpg");
         /* 호퍼스(2026) TMDB #1327819 공식 포스터 — schema.org image */
@@ -145,22 +147,26 @@ public class DataInitializer implements CommandLineRunner {
         m.put("베테랑 2", "https://image.tmdb.org/t/p/w500/aosm8NMQ3UyoBVpSxyimorCQykC.jpg");
         /* 공식 포스터 — static/images/posters/extreme-job.png (사용자 제공) */
         m.put("극한직업", "/images/posters/extreme-job.png");
-        m.put("명량", "https://image.tmdb.org/t/p/w500/mBHQUZXKGMcxg4GEbwTWAIGMUaQ.jpg");
-        m.put("부산행", "https://image.tmdb.org/t/p/w500/6A5CKjrABTPpQVpjp83zTSHvczk.jpg");
+        /* 공식 포스터 — static/images/posters/myeongryang.png (사용자 제공) */
+        m.put("명량", "/images/posters/myeongryang.png");
+        /* 공식 포스터 — static/images/posters/busanhaeng.png (사용자 제공) */
+        m.put("부산행", "/images/posters/busanhaeng.png");
         /* 공식 포스터 — static/images/posters/taegeukgi.png (사용자 제공) */
         m.put("태극기 휘날리며", "/images/posters/taegeukgi.png");
-        m.put("변호인", "https://image.tmdb.org/t/p/w500/rRoF4nCjMp6cOjSHSVa0VSNEZ3H.jpg");
+        /* 공식 포스터 — static/images/posters/byeonhoin.png (사용자 제공) */
+        m.put("변호인", "/images/posters/byeonhoin.png");
         /* 공식 포스터 — static/images/posters/assassination.png (사용자 제공) */
         m.put("암살", "/images/posters/assassination.png");
         m.put("아바타 3", "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg");
-        m.put("위키드", "https://image.tmdb.org/t/p/w500/xDGbZ0JJ3mYaGKy4Nzd9Kph6ce9.jpg");
+        /* 공식 포스터 — static/images/posters/wicked.png (사용자 제공) */
+        m.put("위키드", "/images/posters/wicked.png");
         m.put("모아나 2", "https://image.tmdb.org/t/p/w500/yh64qwwGqSbyiKkVmaFi2wvnBPH.jpg");
         m.put("브라이드!", "https://image.tmdb.org/t/p/w500/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg");
         m.put("우리는 매일매일", "https://image.tmdb.org/t/p/w500/9P4BUjqFtOyAM4TLM8O8TJlIifm.jpg");
         m.put("소년들", "https://image.tmdb.org/t/p/w500/rgyKMJkZfDdcfjfIPfNSgVJ7S44.jpg");
         m.put("다음 소희", "https://image.tmdb.org/t/p/w500/2Vgmre6UAWZX8H3oBW9p0kPiHiM.jpg");
         m.put("오펜하이머", "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg");
-        m.put("듄2", "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8zp05NQxs1.jpg");
+        m.put("듄2", "/images/posters/dune-part-two.png");
         m.put("듄", "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg");
         m.put("탑건: 매버릭", "https://image.tmdb.org/t/p/w500/62HCnUTz_9PVZiO6ur1BWP07nBP.jpg");
         m.put("한국이 싫어서", "https://image.tmdb.org/t/p/w500/52AfXWuXCHn3KdD5q2ZBbm87kTr.jpg");
@@ -404,7 +410,7 @@ public class DataInitializer implements CommandLineRunner {
            "/images/posters/mad-dance-office.png", 7.2, 28,
            "대한민국 직장인들의 애환을 담은 유쾌한 직장 코미디."},
           {"초속 5센티미터",    "애니메이션/로맨스","SHOWING",null,"전체이용가",
-           "https://image.tmdb.org/t/p/w500/7copY2VsRqNVFfOfCwA6sFAMf7Z.jpg", 9.0, 22,
+           "/images/posters/chosok-5centimeter.png", 9.0, 22,
            "신카이 마코토 감독. 멀어지는 두 사람 사이의 거리, 초속 5센티미터로 떨어지는 벚꽃처럼."},
           {"햄넷",              "드라마/시대극", "SHOWING", null, "12세이상",
            "/images/posters/hamnet.png", 8.0, 18,
@@ -476,23 +482,23 @@ public class DataInitializer implements CommandLineRunner {
            "/images/posters/extreme-job.png", 9.1, 58,
            "마약반 형사들의 치킨집 위장 창업! 역대 2위 1,626만 관객의 전설적인 한국 코미디."},
           {"명량",           "역사/액션",     "SHOWING", null,"12세이상",
-           "https://image.tmdb.org/t/p/w500/mBHQUZXKGMcxg4GEbwTWAIGMUaQ.jpg", 9.3, 55,
+           "/images/posters/myeongryang.png", 9.3, 55,
            "이순신 장군의 명량해전. 역대 1위 1,761만 관객. 12척으로 330척을 이긴 기적의 전투."},
           {"부산행",         "액션/스릴러",   "SHOWING", null,"15세이상",
-           "https://image.tmdb.org/t/p/w500/6A5CKjrABTPpQVpjp83zTSHvczk.jpg", 9.5, 62,
+           "/images/posters/busanhaeng.png", 9.5, 62,
            "좀비 바이러스가 퍼진 KTX 열차 안. 한국 좀비물의 새 지평을 연 작품."},
           {"태극기 휘날리며","역사/드라마",   "SHOWING", null,"15세이상",
            "/images/posters/taegeukgi.png", 9.2, 48,
            "6.25 전쟁을 배경으로 한 형제의 이야기. 역대 5위 1,174만 관객."},
           {"변호인",         "드라마/법정",   "SHOWING", null,"15세이상",
-           "https://image.tmdb.org/t/p/w500/rRoF4nCjMp6cOjSHSVa0VSNEZ3H.jpg", 9.4, 45,
+           "/images/posters/byeonhoin.png", 9.4, 45,
            "송우석 변호사가 국가 권력에 맞서 싸우는 실화 기반 드라마."},
           {"암살",           "액션/역사",     "SHOWING", null,"15세이상",
            "/images/posters/assassination.png", 9.1, 50,
            "1933년 경성. 친일파 암살 작전에 투입된 저격수들의 이야기."},
           // ── 개봉예정 추가분 ──────────────────────────────────
           {"위키드",         "뮤지컬/판타지", "UPCOMING", null,"전체이용가",
-           "https://image.tmdb.org/t/p/w500/xDGbZ0JJ3mYaGKy4Nzd9Kph6ce9.jpg", 0.0, 0,
+           "/images/posters/wicked.png", 0.0, 0,
            "브로드웨이 최장 히트 뮤지컬의 영화화. 오즈의 마법사 이전 이야기."},
           {"모아나 2",       "애니메이션",    "UPCOMING", null,"전체이용가",
            "https://image.tmdb.org/t/p/w500/yh64qwwGqSbyiKkVmaFi2wvnBPH.jpg", 0.0, 0,
@@ -508,7 +514,7 @@ public class DataInitializer implements CommandLineRunner {
            "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", 8.4, 22,
            "디즈니·픽사. 라일리의 새 감정들과 함께하는 성장 이야기."},
           {"듄: 파트 투", "SF/어드벤처", "SHOWING", null, "12세이상",
-           "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8zp05NQxs1.jpg", 8.7, 48,
+           "/images/posters/dune-part-two.png", 8.7, 48,
            "아트레이데스 가문과 프레멘의 운명을 건 대전. 데니 빌뇌브 감독 SF 대작 후속편."},
         };
 
