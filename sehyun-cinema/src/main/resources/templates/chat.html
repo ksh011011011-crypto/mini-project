@@ -7,9 +7,11 @@
 <main style="padding:50px 0 80px;">
   <div class="container-xl" style="max-width:640px;">
     <h1 style="font-size:1.4rem; font-weight:900; color:var(--text-primary); margin-bottom:8px;">AI 상담톡</h1>
-    <p style="color:var(--text-muted); font-size:.82rem; margin-bottom:24px;">
-      규칙 기반 AI가 예매·멤버십·상영관 등을 안내합니다.
-      <strong style="color:var(--gold);">「자동예매」</strong> 입력 시 상영 중 영화 하나가 골라져 예매 화면으로 이동합니다. (실제 결제 전 로그인·좌석 확인 필요)
+    <p style="color:var(--text-muted); font-size:.82rem; margin-bottom:24px; line-height:1.65;">
+      키워드가 맞으면 <strong style="color:var(--text-primary);">빠른 규칙 안내</strong>를 쓰고, 그렇지 않으면
+      <strong style="color:var(--gold);">OpenAI(GPT)·Anthropic(Claude)·Google(Gemini)</strong> 중 설정된 API로 순서대로 답합니다
+      (각각 지시 준수·한국어 맥락·속도 등 강점 활용, 키가 없으면 기존 안내만 표시).
+      <strong style="color:var(--gold);">「자동예매」</strong> 입력 시 상영 중 영화로 예매 화면 연결. (결제 전 로그인·좌석 확인)
     </p>
 
     <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color); overflow:hidden; height:520px; display:flex; flex-direction:column;">
@@ -133,6 +135,7 @@ async function sendMessage(text) {
     }
 
     const reply = data.response;
+    const prov = data.provider;
     if (reply && String(reply).startsWith('__AUTO_BOOKING__')) {
       const parts = String(reply).split(':');
       const movieId = parts.length > 1 ? parts[1].trim() : '';
@@ -141,7 +144,13 @@ async function sendMessage(text) {
       setTimeout(() => { location.href = '/booking' + q; }, 700);
       return;
     }
-    addMessage(reply || '응답이 비어 있습니다.', 'bot');
+    let display = reply || '응답이 비어 있습니다.';
+    if (prov && prov !== 'rule' && prov !== 'fallback') {
+      display = '<div style="font-size:.68rem; opacity:.6; margin-bottom:8px;">' + prov + '</div>' + String(display).replace(/\n/g, '<br>');
+    } else {
+      display = String(display).replace(/\n/g, '<br>');
+    }
+    addMessage(display, 'bot');
   } catch (e) {
     document.getElementById(typingId)?.remove();
     addMessage('네트워크 오류입니다. 서버가 켜져 있는지 확인 후 다시 시도해 주세요.', 'bot');

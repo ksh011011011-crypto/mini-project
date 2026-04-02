@@ -4,7 +4,7 @@
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <main class="page-mypage" style="padding:50px 0 80px; color:#e8e8f0;">
-  <div class="container-xl" style="max-width:860px;">
+  <div class="container-xl" style="max-width:900px;">
     <div style="display:flex; align-items:center; gap:16px; margin-bottom:28px;">
       <a th:href="@{/mypage}" style="color:var(--text-muted);"><i class="fa-solid fa-arrow-left"></i></a>
       <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">예매 내역</h1>
@@ -12,42 +12,87 @@
 
     <div th:if="${bookings.empty}" style="text-align:center; padding:60px; color:var(--text-muted);">
       <i class="fa-solid fa-ticket" style="font-size:3rem; opacity:.2; display:block; margin-bottom:12px;"></i>
-      예매 내역이 없습니다.
+      예매·취소 내역이 모두 없습니다.
       <div style="margin-top:16px;"><a th:href="@{/booking}" class="btn-hero-primary" style="padding:10px 28px;">영화 예매하기</a></div>
     </div>
 
-    <div th:each="b : ${bookings}"
-         style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,255,255,.06); padding:24px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
-      <div style="display:flex; gap:16px; align-items:flex-start; flex:1; min-width:0;">
-        <img th:src="${b.movie.posterUrl != null and !b.movie.posterUrl.isEmpty()} ? ${b.movie.posterUrl} : 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'"
-             th:alt="${b.movie.title}"
-             style="width:72px; height:108px; object-fit:cover; border-radius:8px; flex-shrink:0; background:#1a1a2e;"
-             onerror="this.onerror=null; this.src='https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg';"/>
-        <div style="min-width:0;">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
-          <span th:class="${b.status == 'CONFIRMED'} ? 'status-badge confirmed' : 'status-badge cancelled'"
-                th:text="${b.status == 'CONFIRMED'} ? '예매 완료' : '취소됨'"></span>
-          <strong th:text="${b.movie.title}" style="color:var(--text-primary);"></strong>
+    <th:block th:if="${!bookings.empty}">
+      <!-- 확정 예매 -->
+      <section style="margin-bottom:40px;">
+        <h2 style="font-size:1.05rem; font-weight:800; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:10px;">
+          <i class="fa-solid fa-circle-check"></i> 예매 내역 (확정)
+        </h2>
+        <div th:if="${activeBookings.empty}" style="background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.12); border-radius:12px; padding:28px; text-align:center; color:var(--text-muted); font-size:.9rem;">
+          확정된 예매가 없습니다.
         </div>
-        <div style="color:var(--text-muted); font-size:.82rem; line-height:1.8;">
-          <p><i class="fa-solid fa-film" style="margin-right:6px;"></i><span th:text="${b.theaterType}"></span></p>
-          <p><i class="fa-solid fa-chair" style="margin-right:6px;"></i><span th:text="${b.seatInfo}"></span></p>
-          <p><i class="fa-solid fa-users" style="margin-right:6px;"></i>성인 <span th:text="${b.adultCount}"></span>명, 청소년 <span th:text="${b.teenCount}"></span>명</p>
-          <p><i class="fa-solid fa-calendar" style="margin-right:6px;"></i><span th:text="${#temporals.format(b.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <div th:each="b : ${activeBookings}"
+             style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,255,255,.06); padding:24px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
+          <div style="display:flex; gap:16px; align-items:flex-start; flex:1; min-width:0;">
+            <img th:src="${b.movie.posterUrl != null and !b.movie.posterUrl.isEmpty()} ? ${b.movie.posterUrl} : 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'"
+                 th:alt="${b.movie.title}"
+                 style="width:72px; height:108px; object-fit:cover; border-radius:8px; flex-shrink:0; background:#1a1a2e;"
+                 onerror="this.onerror=null; this.src='https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg';"/>
+            <div style="min-width:0;">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
+                <span class="status-badge confirmed">예매 완료</span>
+                <strong th:text="${b.movie.title}" style="color:var(--text-primary);"></strong>
+              </div>
+              <div style="color:var(--text-muted); font-size:.82rem; line-height:1.8;">
+                <p><i class="fa-solid fa-film" style="margin-right:6px;"></i><span th:text="${b.theaterType}"></span></p>
+                <p><i class="fa-solid fa-chair" style="margin-right:6px;"></i><span th:text="${b.seatInfo}"></span></p>
+                <p><i class="fa-solid fa-users" style="margin-right:6px;"></i>성인 <span th:text="${b.adultCount}"></span>명, 청소년 <span th:text="${b.teenCount}"></span>명</p>
+                <p><i class="fa-solid fa-calendar" style="margin-right:6px;"></i><span th:text="${#temporals.format(b.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <p style="color:var(--gold); font-size:1.1rem; font-weight:800; margin-bottom:10px;"
+               th:text="${#numbers.formatInteger(b.totalPrice,1,'COMMA')} + '원'"></p>
+            <form th:action="@{/booking/cancel/{id}(id=${b.id})}" method="post"
+                  onsubmit="return confirm('예매를 취소하시겠습니까?')">
+              <th:block th:replace="~{fragments/csrf-field :: csrfField}"></th:block>
+              <button type="submit" style="background:none; border:1px solid var(--accent-red); color:var(--accent-red); padding:6px 16px; border-radius:6px; cursor:pointer; font-size:.78rem;">취소</button>
+            </form>
+          </div>
         </div>
+      </section>
+
+      <!-- 취소 내역 -->
+      <section>
+        <h2 style="font-size:1.05rem; font-weight:800; color:rgba(255,120,120,.95); margin-bottom:16px; display:flex; align-items:center; gap:10px;">
+          <i class="fa-solid fa-ban"></i> 취소 내역
+        </h2>
+        <div th:if="${cancelledBookings.empty}" style="background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.12); border-radius:12px; padding:28px; text-align:center; color:var(--text-muted); font-size:.9rem;">
+          취소된 예매가 없습니다.
         </div>
-      </div>
-      <div style="text-align:right;">
-        <p style="color:var(--gold); font-size:1.1rem; font-weight:800; margin-bottom:10px;"
-           th:text="${#numbers.formatInteger(b.totalPrice,1,'COMMA')} + '원'"></p>
-        <form th:if="${b.status == 'CONFIRMED'}"
-              th:action="@{/booking/cancel/{id}(id=${b.id})}" method="post"
-              onsubmit="return confirm('예매를 취소하시겠습니까?')">
-          <th:block th:replace="~{fragments/csrf-field :: csrfField}"></th:block>
-          <button type="submit" style="background:none; border:1px solid var(--accent-red); color:var(--accent-red); padding:6px 16px; border-radius:6px; cursor:pointer; font-size:.78rem;">취소</button>
-        </form>
-      </div>
-    </div>
+        <div th:each="b : ${cancelledBookings}"
+             style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,120,120,.15); padding:24px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; opacity:.95;">
+          <div style="display:flex; gap:16px; align-items:flex-start; flex:1; min-width:0;">
+            <img th:src="${b.movie.posterUrl != null and !b.movie.posterUrl.isEmpty()} ? ${b.movie.posterUrl} : 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'"
+                 th:alt="${b.movie.title}"
+                 style="width:72px; height:108px; object-fit:cover; border-radius:8px; flex-shrink:0; background:#1a1a2e; filter:grayscale(.35);"
+                 onerror="this.onerror=null; this.src='https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg';"/>
+            <div style="min-width:0;">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
+                <span class="status-badge cancelled">취소됨</span>
+                <strong th:text="${b.movie.title}" style="color:var(--text-primary);"></strong>
+              </div>
+              <div style="color:var(--text-muted); font-size:.82rem; line-height:1.8;">
+                <p><i class="fa-solid fa-film" style="margin-right:6px;"></i><span th:text="${b.theaterType}"></span></p>
+                <p><i class="fa-solid fa-chair" style="margin-right:6px;"></i><span th:text="${b.seatInfo}"></span></p>
+                <p><i class="fa-solid fa-users" style="margin-right:6px;"></i>성인 <span th:text="${b.adultCount}"></span>명, 청소년 <span th:text="${b.teenCount}"></span>명</p>
+                <p><i class="fa-solid fa-calendar" style="margin-right:6px;"></i><span th:text="${#temporals.format(b.createdAt, 'yyyy-MM-dd HH:mm')}"></span> 예매 건</p>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <p style="color:var(--text-muted); font-size:.88rem; text-decoration:line-through;"
+               th:text="${#numbers.formatInteger(b.totalPrice,1,'COMMA')} + '원'"></p>
+            <p style="font-size:.72rem; color:rgba(255,255,255,.4); margin-top:6px;">취소된 건은 복구할 수 없습니다.</p>
+          </div>
+        </div>
+      </section>
+    </th:block>
   </div>
 </main>
 <div th:replace="~{fragments/header :: footer}"></div>

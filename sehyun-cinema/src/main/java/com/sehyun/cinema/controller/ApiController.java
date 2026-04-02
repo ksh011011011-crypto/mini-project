@@ -4,6 +4,7 @@ import com.sehyun.cinema.dto.StoreCheckoutRequest;
 import com.sehyun.cinema.entity.Member;
 import com.sehyun.cinema.entity.Movie;
 import com.sehyun.cinema.entity.StoreOrder;
+import com.sehyun.cinema.service.AiLlmChatService;
 import com.sehyun.cinema.service.CustomerService;
 import com.sehyun.cinema.service.MemberService;
 import com.sehyun.cinema.service.MovieService;
@@ -24,6 +25,7 @@ public class ApiController {
     private final MovieService movieService;
     private final MemberService memberService;
     private final CustomerService customerService;
+    private final AiLlmChatService aiLlmChatService;
     private final StoreOrderService storeOrderService;
 
     // 하트 토글
@@ -81,9 +83,10 @@ public class ApiController {
     public ResponseEntity<Map<String, Object>> chat(@RequestBody Map<String, String> req) {
         String message = req.getOrDefault("message", "");
         boolean open = customerService.isChatServiceOpen();
-        String response = customerService.chatResponse(message);
+        AiLlmChatService.ChatAnswer ans = aiLlmChatService.answer(message);
         return ResponseEntity.ok(Map.of(
-            "response", response,
+            "response", ans.text(),
+            "provider", ans.provider(),
             "chatOpen", open
         ));
     }

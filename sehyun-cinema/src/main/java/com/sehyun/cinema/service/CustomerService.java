@@ -98,99 +98,106 @@ public class CustomerService {
         return true;
     }
 
-    public String chatResponse(String message) {
-        if (message == null || message.isBlank()) return "무엇이든 질문해 주세요! 😊";
+    /**
+     * 규칙(키워드)에 매칭되면 답변 문자열, 없으면 empty (LLM·폴백으로 넘김).
+     * 공백 메시지는 호출 전에 처리할 것.
+     */
+    public Optional<String> keywordReply(String message) {
         String msg   = message.trim();
         String lower = msg.toLowerCase().replace(" ", "");
 
-        // 욕설: 차단·카운트 없이 안내만 (3회 제한 없음)
         for (String p : PROFANITY_LIST) {
             if (lower.contains(p)) {
-                return "정중한 표현으로 질문해 주시면 더 잘 도와드릴 수 있어요 😊\n"
-                    + "예매, 취소·환불, 상영시간표, 멤버십 등 편하게 물어보세요.";
+                return Optional.of("정중한 표현으로 질문해 주시면 더 잘 도와드릴 수 있어요 😊\n"
+                    + "예매, 취소·환불, 상영시간표, 멤버십 등 편하게 물어보세요.");
             }
         }
 
-        // 자동 예매: 상영작 중 하나로 예매 화면 연결 (「네」단독은 예매 이동 안 함 — 오동작 방지)
         if (isAutoBookingIntent(lower)) {
-            return buildAutoBookingToken();
+            return Optional.of(buildAutoBookingToken());
         }
 
-        // ── 예매/결제 ──────────────────────────────────────
         if (lower.contains("예매") && (lower.contains("방법") || lower.contains("어떻게") || lower.contains("하는법"))) {
-            return "🎬 예매 방법 안내\n\n① 상단 메뉴 [예매] 클릭\n② 영화 선택 → 상영관 선택 → 날짜/시간 선택\n③ 인원 및 좌석 선택\n④ 쿠폰 적용 후 결제 완료\n\n예매 페이지로 이동하시겠습니까? '네'라고 입력해 주세요.";
+            return Optional.of("🎬 예매 방법 안내\n\n① 상단 메뉴 [예매] 클릭\n② 영화 선택 → 상영관 선택 → 날짜/시간 선택\n③ 인원 및 좌석 선택\n④ 쿠폰 적용 후 결제 완료\n\n예매 페이지로 이동하시겠습니까? '네'라고 입력해 주세요.");
         }
         if (lower.contains("취소") || lower.contains("환불")) {
-            return "🔄 예매 취소/환불 안내\n\n• 취소 방법: 마이페이지 → 예매내역 → 취소\n• 상영 시작 전: 전액 환불\n• 상영 시작 후: 취소 불가\n• 환불 처리: 카드사에 따라 3~5 영업일 소요";
+            return Optional.of("🔄 예매 취소/환불 안내\n\n• 취소 방법: 마이페이지 → 예매내역 → 취소\n• 상영 시작 전: 전액 환불\n• 상영 시작 후: 취소 불가\n• 환불 처리: 카드사에 따라 3~5 영업일 소요");
         }
         if (lower.contains("결제") || lower.contains("페이")) {
-            return "💳 결제 수단 안내\n\n• 신용/체크카드\n• 카카오페이\n• 토스페이\n• 휴대폰 결제\n• 현금(무통장 입금)\n\n모든 결제 수단은 예매 완료 화면에서 선택하실 수 있습니다.";
+            return Optional.of("💳 결제 수단 안내\n\n• 신용/체크카드\n• 카카오페이\n• 토스페이\n• 휴대폰 결제\n• 현금(무통장 입금)\n\n모든 결제 수단은 예매 완료 화면에서 선택하실 수 있습니다.");
         }
 
-        // ── VIP/멤버십 ─────────────────────────────────────
         if (lower.contains("vip") || lower.contains("멤버십") || lower.contains("등급") || lower.contains("혜택")) {
-            return "⭐ VIP 멤버십 등급 안내\n\n• 일반: 26만원 미만\n• VIP: 연 26만원 이상\n• VVIP: 연 30만원 이상\n• LVIP: 연 36만원 이상\n\n📌 관람일 2~3일 후 자동 반영\n📌 1일 최대 3건 인정 (매점 제외)\n\n자세한 내용은 [멤버십] 페이지를 확인해 주세요.";
+            return Optional.of("⭐ VIP 멤버십 등급 안내\n\n• 일반: 26만원 미만\n• VIP: 연 26만원 이상\n• VVIP: 연 30만원 이상\n• LVIP: 연 36만원 이상\n\n📌 관람일 2~3일 후 자동 반영\n📌 1일 최대 3건 인정 (매점 제외)\n\n자세한 내용은 [멤버십] 페이지를 확인해 주세요.");
         }
 
-        // ── 상영관 ──────────────────────────────────────────
         if (lower.contains("imax") || lower.contains("이맥스")) {
-            return "🎬 IMAX관 안내\n\n초대형 스크린(최대 26m)과 12채널 입체 음향이 특징입니다.\n• 요금: 18,000원 (일반관 대비 +4,000원)\n• VIP 회원: 기존 요금 유지 (2026.06.30까지)";
+            return Optional.of("🎬 IMAX관 안내\n\n초대형 스크린(최대 26m)과 12채널 입체 음향이 특징입니다.\n• 요금: 18,000원 (일반관 대비 +4,000원)\n• VIP 회원: 기존 요금 유지 (2026.06.30까지)");
         }
         if (lower.contains("4dx")) {
-            return "🌪️ 4DX관 안내\n\n움직이는 좌석과 바람·물·향기 등 20가지 특수효과를 즐길 수 있습니다.\n• 요금: 19,000원 (일반관 대비 +5,000원)\n• 세현 강남·수원·부산점 운영 중";
+            return Optional.of("🌪️ 4DX관 안내\n\n움직이는 좌석과 바람·물·향기 등 20가지 특수효과를 즐길 수 있습니다.\n• 요금: 19,000원 (일반관 대비 +5,000원)\n• 세현 강남·수원·부산점 운영 중");
         }
         if (lower.contains("수퍼플렉스") || lower.contains("샤롯데")) {
-            return "🏟️ 스페셜관 안내\n\n• 수퍼플렉스: 270도 초대형 스크린 (17,000원)\n• 샤롯데: 프리미엄 음향 + 럭셔리 인테리어 (22,000원)\n• 리클라이너관: 완전 젖혀지는 리클라이너 좌석 (16,000원)";
+            return Optional.of("🏟️ 스페셜관 안내\n\n• 수퍼플렉스: 270도 초대형 스크린 (17,000원)\n• 샤롯데: 프리미엄 음향 + 럭셔리 인테리어 (22,000원)\n• 리클라이너관: 완전 젖혀지는 리클라이너 좌석 (16,000원)");
         }
 
-        // ── 상영시간표 ──────────────────────────────────────
         if (lower.contains("상영") && (lower.contains("시간") || lower.contains("시간표") || lower.contains("언제"))) {
-            return "🕐 상영시간표 안내\n\n상단 메뉴 [예매] → [상영시간표] 에서 날짜별·영화관별 상영 시간을 확인하실 수 있습니다.\n\n직접 이동하려면: /schedule";
+            return Optional.of("🕐 상영시간표 안내\n\n상단 메뉴 [예매] → [상영시간표] 에서 날짜별·영화관별 상영 시간을 확인하실 수 있습니다.\n\n직접 이동하려면: /schedule");
         }
 
-        // ── 영화 정보 ───────────────────────────────────────
         if (lower.contains("왕과사는남자") || lower.contains("왕사남")) {
-            return "👑 왕과 사는 남자\n\n• 누적 관객: 1,561만 명 (8주 연속 1위)\n• 장르: 사극/드라마\n• 등급: 12세 이상\n• 상영 시간: 약 129분\n\n예매를 원하시면 '네'라고 입력해 주세요!";
+            return Optional.of("👑 왕과 사는 남자\n\n• 누적 관객: 1,561만 명 (8주 연속 1위)\n• 장르: 사극/드라마\n• 등급: 12세 이상\n• 상영 시간: 약 129분\n\n예매를 원하시면 '네'라고 입력해 주세요!");
         }
         if (lower.contains("헤일메리") || lower.contains("projecthailmary")) {
-            return "🚀 프로젝트 헤일메리\n\n• 누적 관객: 115만 명 (2위)\n• 장르: SF/어드벤처\n• 등급: 12세 이상\n• 상영 시간: 약 141분\n• 원작: 앤디 위어 베스트셀러 소설\n\n예매를 원하시면 '네'라고 입력해 주세요!";
+            return Optional.of("🚀 프로젝트 헤일메리\n\n• 누적 관객: 115만 명 (2위)\n• 장르: SF/어드벤처\n• 등급: 12세 이상\n• 상영 시간: 약 141분\n• 원작: 앤디 위어 베스트셀러 소설\n\n예매를 원하시면 '네'라고 입력해 주세요!");
         }
 
-        // ── 운영/기타 ───────────────────────────────────────
         if (lower.contains("운영시간") || lower.contains("영업시간") || lower.contains("몇시")) {
-            return "⏰ 영업 안내\n\n• 첫 상영: 오전 10:00\n• 마지막 상영: 자정 (23:30)\n• AI 상담톡: 시간 제한 없이 이용 가능\n• 1:1 문의 답변: 평일 09:00 ~ 18:00";
+            return Optional.of("⏰ 영업 안내\n\n• 첫 상영: 오전 10:00\n• 마지막 상영: 자정 (23:30)\n• AI 상담톡: 시간 제한 없이 이용 가능\n• 1:1 문의 답변: 평일 09:00 ~ 18:00");
         }
         if (lower.contains("주차") || lower.contains("파킹")) {
-            return "🚗 주차 안내\n\n• 영화 관람 시 최초 1시간 무료 주차\n• VIP 회원: 최초 2시간 무료\n• 이후 10분당 500원 추가\n• 각 지점 주차장 규모가 다를 수 있습니다.";
+            return Optional.of("🚗 주차 안내\n\n• 영화 관람 시 최초 1시간 무료 주차\n• VIP 회원: 최초 2시간 무료\n• 이후 10분당 500원 추가\n• 각 지점 주차장 규모가 다를 수 있습니다.");
         }
         if (lower.contains("분실물") || lower.contains("잃어버")) {
-            return "🔍 분실물 안내\n\n분실물은 상영관 내 직원에게 문의하거나\n고객센터(010-3331-0292)로 연락해 주세요.\n분실물 보관 기간: 30일\n온라인 문의: 1:1 문의 → 분실물 카테고리 선택";
+            return Optional.of("🔍 분실물 안내\n\n분실물은 상영관 내 직원에게 문의하거나\n고객센터(010-3331-0292)로 연락해 주세요.\n분실물 보관 기간: 30일\n온라인 문의: 1:1 문의 → 분실물 카테고리 선택");
         }
         if (lower.contains("안녕") || lower.contains("hi") || lower.contains("hello") || lower.contains("안뇽")) {
-            return "안녕하세요! 세현시네마 AI 상담톡입니다 😊\n\n아래 항목으로 빠르게 도움드릴 수 있어요:\n• 예매 방법\n• 취소/환불\n• 상영시간표\n• VIP 멤버십\n• 상영관 안내\n• 자동예매(키워드 입력 시 예매 화면 연결)\n\n궁금한 내용을 입력해 주세요!";
+            return Optional.of("안녕하세요! 세현시네마 AI 상담톡입니다 😊\n\n아래 항목으로 빠르게 도움드릴 수 있어요:\n• 예매 방법\n• 취소/환불\n• 상영시간표\n• VIP 멤버십\n• 상영관 안내\n• 자동예매(키워드 입력 시 예매 화면 연결)\n\n궁금한 내용을 입력해 주세요!");
         }
         if (lower.contains("상담톡") || lower.contains("챗봇") || lower.contains("ai상담")) {
-            return "네, 지금 AI 상담톡으로 연결되어 있어요 🤖\n규칙 기반으로 예매·멤버십·시간표 등을 안내합니다.\n\n자동으로 예매 화면을 열려면 「자동예매」 또는 「바로예매」라고 입력해 주세요.";
+            return Optional.of("네, 지금 AI 상담톡으로 연결되어 있어요 🤖\n규칙 기반으로 예매·멤버십·시간표 등을 안내합니다.\n\n자동으로 예매 화면을 열려면 「자동예매」 또는 「바로예매」라고 입력해 주세요.");
         }
         if (lower.contains("고맙") || lower.contains("감사") || lower.contains("땡큐") || lower.contains("thank")) {
-            return "도움이 되어 기쁩니다! 😊\n추가 문의사항이 있으시면 언제든지 질문해 주세요.\n좋은 영화 관람 되세요! 🎬";
+            return Optional.of("도움이 되어 기쁩니다! 😊\n추가 문의사항이 있으시면 언제든지 질문해 주세요.\n좋은 영화 관람 되세요! 🎬");
         }
         if (lower.contains("종료") || lower.contains("끝") || lower.contains("그만")) {
-            return "상담을 종료합니다. 세현시네마를 이용해 주셔서 감사합니다! 🎬\n즐거운 하루 되세요 😊";
+            return Optional.of("상담을 종료합니다. 세현시네마를 이용해 주셔서 감사합니다! 🎬\n즐거운 하루 되세요 😊");
         }
         if (lower.contains("도와") || lower.contains("help") || lower.contains("문의")) {
-            return "무엇을 도와드릴까요? 😊\n• 예매·환불·시간표·멤버십·IMAX/4DX 등 키워드로 질문해 주세요.\n• 「자동예매」 입력 시 현재 상영작 기준으로 예매 화면으로 안내합니다.";
+            return Optional.of("무엇을 도와드릴까요? 😊\n• 예매·환불·시간표·멤버십·IMAX/4DX 등 키워드로 질문해 주세요.\n• 「자동예매」 입력 시 현재 상영작 기준으로 예매 화면으로 안내합니다.");
         }
         if (lower.contains("예매")) {
-            return "🎫 예매 도우미\n\n• 단계: 영화 선택 → 상영관·일시 → 인원·좌석 → 결제\n• 상영시간표: 상단 메뉴 [상영시간표]\n• 「자동예매」라고 입력하면 상영 중인 작품 중 하나로 예매 페이지를 열어 드립니다.";
+            return Optional.of("🎫 예매 도우미\n\n• 단계: 영화 선택 → 상영관·일시 → 인원·좌석 → 결제\n• 상영시간표: 상단 메뉴 [상영시간표]\n• 「자동예매」라고 입력하면 상영 중인 작품 중 하나로 예매 페이지를 열어 드립니다.");
         }
 
+        return Optional.empty();
+    }
+
+    public String unknownKeywordFallback() {
         return "그 부분은 아직 학습된 키워드가 없어요 😅\n\n이렇게 질문해 보세요:\n"
             + "• 예매 방법 / 환불 / 상영시간표\n"
             + "• IMAX 또는 4DX\n"
             + "• 「자동예매」(예매 화면 바로 연결)\n"
             + "• 멤버십·주차·분실물\n\n"
             + "FAQ·1:1 문의·고객센터(010-3331-0292)도 이용 가능합니다.";
+    }
+
+    /** 규칙만 (키워드 미매칭 시 기존 안내 문구). LLM 미설정 시와 동일한 동작. */
+    public String chatResponse(String message) {
+        if (message == null || message.isBlank()) {
+            return "무엇이든 질문해 주세요! 😊";
+        }
+        return keywordReply(message).orElseGet(this::unknownKeywordFallback);
     }
 
     private static boolean isAutoBookingIntent(String lower) {

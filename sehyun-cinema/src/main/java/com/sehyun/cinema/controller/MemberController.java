@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -83,9 +84,17 @@ public class MemberController {
     @GetMapping("/mypage/bookings")
     public String myBookings(Authentication authentication, Model model) {
         Member member = memberService.getByUsername(authentication.getName());
-        List<Booking> bookings = bookingService.getMyBookings(member);
+        List<Booking> all = bookingService.getMyBookings(member);
+        List<Booking> activeBookings = all.stream()
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
+                .collect(Collectors.toList());
+        List<Booking> cancelledBookings = all.stream()
+                .filter(b -> "CANCELLED".equals(b.getStatus()))
+                .collect(Collectors.toList());
         model.addAttribute("member", member);
-        model.addAttribute("bookings", bookings);
+        model.addAttribute("bookings", all);
+        model.addAttribute("activeBookings", activeBookings);
+        model.addAttribute("cancelledBookings", cancelledBookings);
         return "mypage-bookings";
     }
 
