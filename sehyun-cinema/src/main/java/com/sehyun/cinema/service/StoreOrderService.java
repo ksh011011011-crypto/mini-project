@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ public class StoreOrderService {
 
     private final StoreOrderRepository storeOrderRepository;
     private final ObjectMapper objectMapper;
+    private final PointService pointService;
 
     /**
      * 온라인 매점 데모 결제 — 실제 PG 연동 없이 주문·금액만 서버 검증 후 저장.
@@ -88,7 +90,22 @@ public class StoreOrderService {
                 .paymentRef(paymentRef)
                 .build();
 
-        return storeOrderRepository.save(order);
+        StoreOrder saved = storeOrderRepository.save(order);
+        pointService.earnFromStore(member, saved.getId(), total);
+        return saved;
+    }
+
+    public void cancelOrder(Member member, Long orderId) {
+        StoreOrder o = storeOrderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+        if (!o.getMember().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("취소 권한이 없습니다.");
+        }
+        if (!"PAID".equals(o.getStatus())) {
+            throw new IllegalArgumentException("이미 취소되었거나 취소할 수 없는 주문입니다.");
+        }
+        o.setStatus("CANCELLED");
+        o.setCancelledAt(LocalDateTime.now());
     }
 
     @Transactional(readOnly = true)

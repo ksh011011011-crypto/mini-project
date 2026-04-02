@@ -9,6 +9,10 @@
       <a th:href="@{/mypage}" style="color:var(--text-muted);"><i class="fa-solid fa-arrow-left"></i></a>
       <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">예매 내역</h1>
     </div>
+    <p style="color:var(--text-muted); font-size:.86rem; margin-bottom:22px; line-height:1.6;">
+      <strong style="color:var(--text-primary);">매점 스낵·콤보</strong> 결제는
+      <a th:href="@{/mypage/store-orders}" style="color:var(--gold); font-weight:700;">매점 주문</a>에서 확인하세요.
+    </p>
 
     <div th:if="${bookings.empty}" style="text-align:center; padding:60px; color:var(--text-muted);">
       <i class="fa-solid fa-ticket" style="font-size:3rem; opacity:.2; display:block; margin-bottom:12px;"></i>

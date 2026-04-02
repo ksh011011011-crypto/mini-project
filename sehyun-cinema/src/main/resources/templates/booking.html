@@ -16,7 +16,7 @@
         <i class="fa-solid fa-display" style="color:#8ab4ff; margin-right:8px;"></i>홈페이지·앱 예매와 <strong>현장 매표소 예매</strong> 모두 가능합니다.
       </p>
       <p style="margin:0 0 10px;">
-        <i class="fa-solid fa-location-dot" style="color:var(--gold); margin-right:8px;"></i>안양 평촌 <strong>시네마몰 9층~10층</strong> 세현 시네마 · 상영·매표·매점 동선 안내는 현장 데스크를 이용해 주세요.
+        <i class="fa-solid fa-location-dot" style="color:var(--gold); margin-right:8px;"></i>세현 시네마는 <strong>강남·홍대·수원·안양 평촌·천안·부산·대구·제주</strong> 등 전국 지점을 운영합니다. 예매 시 선택한 상영관이 지점에 있습니다. <strong>평촌 본점</strong>은 경기 안양시 동안구 부림로 55 시네마몰 9~10층입니다. 상영·매표·매점 동선은 현장 데스크를 이용해 주세요.
       </p>
       <p style="margin:0;">
         <i class="fa-solid fa-popcorn" style="color:var(--lotte-red); margin-right:8px;"></i>팝콘·음료·스낵은 영화 티켓과 별도이며, <strong>매표소 또는 매점 키오스크</strong>에서 결제해 주세요.
@@ -252,7 +252,7 @@
 
             <div style="display:flex; gap:12px;">
               <button type="button" id="prev-step2" class="btn-hero-secondary" style="padding:12px 24px; border-radius:8px;">← 이전</button>
-              <button type="submit" class="btn-submit" style="flex:1; max-width:320px;">
+              <button type="button" id="btn-booking-pay" class="btn-submit" style="flex:1; max-width:320px;">
                 <i class="fa-solid fa-lock" style="margin-right:8px;"></i>결제하고 예매 완료
               </button>
             </div>
@@ -263,6 +263,21 @@
     </div>
   </div>
 </main>
+
+<div id="booking-pay-backdrop" style="display:none; position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.72); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:linear-gradient(165deg,#1a1a2e,#12121f); border:1px solid rgba(228,180,0,.35); border-radius:16px; padding:24px; max-width:400px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.5);">
+    <h4 style="margin:0 0 12px; font-size:1.05rem; color:var(--text-primary); font-weight:800;">영화 예매 결제</h4>
+    <p style="color:var(--text-muted); font-size:.88rem; line-height:1.55; margin:0 0 12px;">
+      선택하신 일정·좌석으로 <strong style="color:var(--gold);">결제하시겠습니까?</strong>
+    </p>
+    <p id="booking-modal-total" style="font-size:1.2rem; font-weight:900; color:var(--gold); margin-bottom:16px;"></p>
+    <p style="font-size:.78rem; color:var(--text-muted); margin-bottom:18px;">확인 시 예매가 완료되며 <a th:href="@{/mypage/bookings}" href="/mypage/bookings" style="color:var(--gold);">예매 내역</a>에 표시됩니다.</p>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button type="button" id="booking-pay-no" style="padding:10px 18px; border-radius:10px; font-weight:700; border:1px solid rgba(255,255,255,.15); background:transparent; color:var(--text-muted); cursor:pointer;">아니오</button>
+      <button type="button" id="booking-pay-yes" style="padding:10px 18px; border-radius:10px; font-weight:700; cursor:pointer; background:linear-gradient(180deg,rgba(228,180,0,.25),rgba(228,180,0,.08)); border:1px solid rgba(228,180,0,.5); color:var(--gold);">예</button>
+    </div>
+  </div>
+</div>
 
 <div th:replace="~{fragments/header :: footer}"></div>
 
@@ -576,6 +591,29 @@ if (initMovieId) updateMoviePreview(initMovieId);
 document.getElementById('booking-form')?.addEventListener('submit', function() {
   updateSummary();
 });
+
+var bookingBackdrop = document.getElementById('booking-pay-backdrop');
+var bookingForm = document.getElementById('booking-form');
+document.getElementById('btn-booking-pay')?.addEventListener('click', function() {
+  updateSummary();
+  var totalEl = document.getElementById('summary-total');
+  document.getElementById('booking-modal-total').textContent = totalEl ? totalEl.textContent : '';
+  if (bookingBackdrop) {
+    bookingBackdrop.style.display = 'flex';
+  }
+});
+document.getElementById('booking-pay-no')?.addEventListener('click', function() {
+  if (bookingBackdrop) bookingBackdrop.style.display = 'none';
+});
+document.getElementById('booking-pay-yes')?.addEventListener('click', function() {
+  if (bookingBackdrop) bookingBackdrop.style.display = 'none';
+  if (bookingForm) bookingForm.submit();
+});
+if (bookingBackdrop) {
+  bookingBackdrop.addEventListener('click', function(e) {
+    if (e.target === bookingBackdrop) bookingBackdrop.style.display = 'none';
+  });
+}
 </script>
 </body>
 </html>

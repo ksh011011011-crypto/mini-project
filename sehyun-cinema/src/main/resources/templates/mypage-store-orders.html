@@ -7,20 +7,20 @@
   <div class="container-xl" style="max-width:860px;">
     <div style="display:flex; align-items:center; gap:16px; margin-bottom:28px;">
       <a th:href="@{/mypage}" style="color:var(--text-muted);"><i class="fa-solid fa-arrow-left"></i></a>
-      <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">매점 주문 내역</h1>
+      <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">매점 주문 · 취소</h1>
     </div>
 
     <p style="color:var(--text-muted); font-size:.86rem; margin-bottom:24px; line-height:1.6;">
-      온라인으로 결제한 스낵·콤보 주문입니다. 현장 수령 시 주문번호를 알려 주세요.
+      <strong style="color:var(--text-primary);">영화 예매</strong>는 <a th:href="@{/mypage/bookings}" style="color:var(--gold);">예매 내역</a>에서 확인하세요. 여기서는 <strong style="color:var(--gold);">매점(스토어)</strong> 결제만 표시됩니다.
     </p>
 
-    <div th:if="${storeOrders.empty}" style="text-align:center; padding:60px; color:var(--text-muted);">
-      <i class="fa-solid fa-basket-shopping" style="font-size:3rem; opacity:.2; display:block; margin-bottom:12px;"></i>
-      매점 주문 내역이 없습니다.
-      <div style="margin-top:16px;"><a th:href="@{/store}" class="btn-hero-primary" style="padding:10px 28px;">매점 가기</a></div>
+    <h2 style="font-size:1.05rem; font-weight:800; color:var(--gold); margin-bottom:14px;">
+      <i class="fa-solid fa-circle-check" style="margin-right:8px;"></i>결제 완료
+    </h2>
+    <div th:if="${paidStoreOrders.empty}" style="text-align:center; padding:36px; color:var(--text-muted); border:1px dashed rgba(255,255,255,.1); border-radius:12px; margin-bottom:32px;">
+      결제 완료된 매점 주문이 없습니다.
     </div>
-
-    <div th:each="order : ${storeOrders}"
+    <div th:each="order : ${paidStoreOrders}"
          style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,255,255,.06); padding:24px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
         <div>
@@ -38,6 +38,11 @@
              th:text="${#numbers.formatInteger(order.totalPrice,1,'COMMA')} + '원'">0원</p>
           <p style="color:var(--text-muted); font-size:.78rem; margin-top:4px;"
              th:text="'결제: ' + ${order.paymentMethod}">결제: CARD</p>
+          <button type="button" class="btn-cancel-store btn-hero-secondary"
+                  th:data-order-id="${order.id}"
+                  style="margin-top:10px; padding:8px 16px; font-size:.8rem; border-radius:8px; cursor:pointer;">
+            주문 취소
+          </button>
         </div>
       </div>
       <ul style="list-style:none; padding:0; margin:0; font-size:.86rem; color:var(--text-light); border-top:1px solid rgba(255,255,255,.06); padding-top:12px;">
@@ -49,8 +54,53 @@
         </li>
       </ul>
     </div>
+
+    <h2 style="font-size:1.05rem; font-weight:800; color:var(--text-muted); margin:32px 0 14px;">
+      <i class="fa-solid fa-ban" style="margin-right:8px;"></i>취소 내역
+    </h2>
+    <div th:if="${cancelledStoreOrders.empty}" style="text-align:center; padding:36px; color:var(--text-muted); border:1px dashed rgba(255,255,255,.1); border-radius:12px;">
+      취소된 매점 주문이 없습니다.
+    </div>
+    <div th:each="order : ${cancelledStoreOrders}"
+         style="background:rgba(244,67,54,.06); border-radius:12px; border:1px solid rgba(244,67,54,.2); padding:20px; margin-bottom:10px; opacity:.95;">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div>
+          <span class="status-badge" style="background:rgba(244,67,54,.2); color:#ffcdd2;">취소됨</span>
+          <p style="color:var(--text-muted); font-size:.78rem; margin-top:8px;">
+            주문 <strong th:text="'SN-' + ${order.id}">SN-0</strong>
+            · 결제일 <span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+          </p>
+          <p th:if="${order.cancelledAt != null}" style="color:var(--text-muted); font-size:.75rem; margin-top:4px;">
+            취소일 <span th:text="${#temporals.format(order.cancelledAt, 'yyyy-MM-dd HH:mm')}"></span>
+          </p>
+        </div>
+        <p style="color:var(--text-muted); font-size:.95rem; font-weight:700;"
+           th:text="${#numbers.formatInteger(order.totalPrice,1,'COMMA')} + '원'">0원</p>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;">
+      <a th:href="@{/store}" class="btn-hero-primary" style="padding:10px 24px;">매점 가기</a>
+    </div>
   </div>
 </main>
 <div th:replace="~{fragments/header :: footer}"></div>
+<script>
+(function(){
+  document.querySelectorAll('.btn-cancel-store').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.getAttribute('data-order-id');
+      if (!id || !confirm('이 매점 주문을 취소하시겠습니까?')) return;
+      fetch('/api/store/orders/' + id + '/cancel', { method:'POST', credentials:'same-origin', headers:{'Accept':'application/json'} })
+        .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, status:r.status, data:d }; }); })
+        .then(function(x){
+          if (x.ok && x.data.ok) { alert('매점 주문이 취소되었습니다.'); location.reload(); }
+          else { alert((x.data && x.data.message) ? x.data.message : '취소에 실패했습니다.'); }
+        })
+        .catch(function(){ alert('네트워크 오류입니다.'); });
+    });
+  });
+})();
+</script>
 </body>
 </html>

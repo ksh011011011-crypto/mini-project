@@ -1,109 +1,545 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/header :: head('매점·스토어')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
+<style>
+  .store-page { padding: 0 0 88px; }
+  .store-hero {
+    position: relative;
+    text-align: center;
+    padding: 56px 20px 48px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -20%, rgba(227, 24, 55, 0.18), transparent 55%),
+      radial-gradient(ellipse 70% 50% at 80% 100%, rgba(228, 180, 0, 0.12), transparent 50%),
+      linear-gradient(165deg, #0a0a14 0%, #12122a 38%, #0d0d1a 100%);
+  }
+  .store-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .store-hero-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+  .store-hero-badge {
+    display: inline-block;
+    color: var(--gold);
+    letter-spacing: 0.35em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(228, 180, 0, 0.35);
+    background: rgba(228, 180, 0, 0.06);
+  }
+  .store-hero h1 {
+    font-size: clamp(1.75rem, 4vw, 2.35rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    background: linear-gradient(120deg, #fff 0%, #f0e8d8 45%, var(--gold-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    text-shadow: 0 0 40px rgba(228, 180, 0, 0.15);
+  }
+  .store-hero-lead {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .store-hero-note {
+    font-size: 0.82rem;
+    opacity: 0.88;
+    line-height: 1.65;
+    color: var(--text-muted);
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 8px;
+  }
+  .store-info-grid {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+  .store-info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 20px 22px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .store-info-card:hover {
+    border-color: rgba(228, 180, 0, 0.22);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  }
+  .store-info-card--gold {
+    border-color: rgba(228, 180, 0, 0.28);
+    background: linear-gradient(145deg, rgba(228, 180, 0, 0.1) 0%, rgba(21, 21, 37, 0.85) 100%);
+  }
+  .store-info-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.15rem;
+  }
+  .store-info-icon--gold {
+    background: rgba(228, 180, 0, 0.15);
+    color: var(--gold);
+    border: 1px solid rgba(228, 180, 0, 0.35);
+  }
+  .store-info-icon--red {
+    background: rgba(227, 24, 55, 0.12);
+    color: var(--lotte-red);
+    border: 1px solid rgba(227, 24, 55, 0.35);
+  }
+  .store-info-body { flex: 1; min-width: 220px; }
+  .store-info-body h3 {
+    font-weight: 800;
+    font-size: 0.98rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .store-info-body p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .store-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .store-menu-col { flex: 1; min-width: 280px; }
+  .store-section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .store-section-head i { color: var(--gold); font-size: 1.15rem; }
+  .store-section-head h2 {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .store-section-head::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(228, 180, 0, 0.35), transparent);
+    min-width: 40px;
+  }
+  #store-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+    gap: 12px;
+  }
+  #store-products .store-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    transition: transform .45s ease, box-shadow .45s ease, border-color .45s ease;
+    opacity: 0;
+    animation: store-card-in .75s ease-out forwards;
+    background: linear-gradient(155deg, rgba(30, 30, 48, 0.95) 0%, rgba(18, 18, 32, 0.98) 100%);
+    border: 1px solid rgba(228, 180, 0, 0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  }
+  @keyframes store-card-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #store-products .store-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(228, 180, 0, 0.15);
+    border-color: rgba(228, 180, 0, 0.45);
+  }
+  #store-products .store-card .store-thumb {
+    width: 100%;
+    height: 76px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 4px;
+    box-sizing: border-box;
+    background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(228, 180, 0, 0.12), rgba(228, 180, 0, 0.03) 55%, transparent 70%) !important;
+    border: 1px solid rgba(228, 180, 0, 0.08);
+  }
+  #store-products .store-card .store-thumb img {
+    opacity: 0;
+    animation: store-img-in .85s ease-out forwards;
+  }
+  @keyframes store-img-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .store-card-title {
+    font-weight: 800;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+  .store-card-desc {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+  .store-card-price {
+    font-weight: 900;
+    font-size: 1rem;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .store-btn-cart {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(228, 180, 0, 0.45);
+    background: linear-gradient(180deg, rgba(228, 180, 0, 0.18) 0%, rgba(228, 180, 0, 0.06) 100%);
+    color: var(--gold-light);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: background 0.35s ease, border-color 0.35s ease, transform 0.25s ease;
+  }
+  .store-btn-cart:hover {
+    background: linear-gradient(180deg, rgba(228, 180, 0, 0.28) 0%, rgba(228, 180, 0, 0.1) 100%);
+    border-color: rgba(228, 180, 0, 0.7);
+    transform: translateY(-1px);
+  }
+  .store-cart-panel {
+    width: 100%;
+    max-width: 340px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 24px;
+  }
+  .store-cart-inner {
+    padding: 22px;
+    border-radius: 16px;
+    border: 1px solid rgba(228, 180, 0, 0.15);
+    background: linear-gradient(165deg, rgba(26, 26, 42, 0.95) 0%, rgba(15, 15, 28, 0.98) 100%);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .store-cart-inner h3 {
+    font-size: 1.02rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+  }
+  .store-cart-inner h3 i { color: var(--gold); }
+  #cart-list { min-height: 76px; }
+  #cart-list li { border-bottom-color: rgba(255, 255, 255, 0.06) !important; }
+  .store-cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 14px;
+    margin-bottom: 14px;
+    border-top: 1px solid rgba(228, 180, 0, 0.12);
+  }
+  .store-cart-total-row span:first-child {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  #cart-total {
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+    color: var(--gold-light) !important;
+    text-shadow: 0 0 24px rgba(228, 180, 0, 0.2);
+  }
+  .store-pay-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  #pay-method {
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(228, 180, 0, 0.15) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: border-color 0.35s ease;
+  }
+  #pay-method:focus {
+    outline: none;
+    border-color: rgba(228, 180, 0, 0.45) !important;
+  }
+  #btn-checkout.btn-submit {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(227, 24, 55, 0.25);
+  }
+  .store-cart-clear {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    border-radius: 10px;
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-muted) !important;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .store-cart-clear:hover {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-light) !important;
+  }
+  #pay-msg {
+    border-radius: 10px !important;
+  }
+  .store-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .store-modal-box {
+    background: linear-gradient(165deg, #1a1a2e 0%, #12121f 100%);
+    border: 1px solid rgba(228, 180, 0, 0.35);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .store-modal-box h4 {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    font-weight: 800;
+  }
+  .store-modal-box p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin: 0 0 18px;
+  }
+  .store-modal-img-wrap {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .store-modal-img-wrap img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  .store-modal-img-wrap .fa-solid {
+    font-size: 4rem;
+    color: rgba(228, 180, 0, 0.45);
+  }
+  .store-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .store-modal-actions button {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    color: var(--text-muted);
+  }
+  .store-modal-actions button.primary {
+    background: linear-gradient(180deg, rgba(228, 180, 0, 0.25), rgba(228, 180, 0, 0.08));
+    border-color: rgba(228, 180, 0, 0.5);
+    color: var(--gold-light);
+  }
+</style>
 
-<main style="padding:0 0 80px;">
-  <section style="background:linear-gradient(160deg,#0d0d1a 0%,#1a1530 45%,#0d0d1a 100%); padding:56px 20px 40px; text-align:center;">
-    <p style="color:var(--gold); letter-spacing:4px; font-size:.75rem; margin-bottom:10px;">SNACK · STORE</p>
-    <h1 style="font-size:2.2rem; font-weight:900; color:var(--text-primary); margin-bottom:12px;">세현 매점 스토어</h1>
-    <p style="color:var(--text-muted); font-size:.95rem; max-width:640px; margin:0 auto; line-height:1.65;">
-      관람 전·후 즐길 수 있는 <strong style="color:var(--text-primary);">팝콘·음료·콤보</strong> 메뉴를 미리 확인하세요.<br/>
-      <span style="color:var(--gold); font-weight:700;">온라인 예매는 영화 티켓만</span> 결제되며, <strong>매점 상품은 현장에서 결제</strong>합니다.
-    </p>
+<main class="store-page">
+  <section class="store-hero">
+    <div class="store-hero-inner">
+      <p class="store-hero-badge">SNACK · STORE</p>
+      <h1>세현 매점 스토어</h1>
+      <p class="store-hero-lead">
+        관람 전·후 즐길 수 있는 <strong style="color:var(--text-primary);">팝콘·음료·콤보</strong>를 담고 <strong style="color:var(--gold);">온라인에서 결제</strong>할 수 있습니다.
+      </p>
+      <p class="store-hero-note">
+        실제 PG 연동 데모가 아닌 <strong style="color:var(--text-primary);">서버 검증·주문 저장</strong>만 수행합니다. 수령은 매점·키오스크에서 주문번호로 가능하다고 가정합니다.
+      </p>
+    </div>
   </section>
 
   <div class="container-xl" style="padding-top:36px;">
-    <!-- 위치 · 결제 안내 -->
-    <div style="display:grid; gap:14px; margin-bottom:32px;">
-      <div style="background:rgba(228,180,0,.1); border:1px solid rgba(228,180,0,.35); border-radius:14px; padding:20px 22px;">
-        <div style="display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;">
-          <i class="fa-solid fa-building" style="color:var(--gold); font-size:1.4rem; margin-top:2px;"></i>
-          <div style="flex:1; min-width:220px;">
-            <p style="font-weight:800; color:var(--text-primary); margin-bottom:6px;">안양 평촌 시네마몰 9층 ~ 10층</p>
-            <p style="color:var(--text-muted); font-size:.88rem; line-height:1.65; margin:0;">
-              세현 시네마 상영관·매점·매표소는 <strong style="color:var(--text-primary);">시네마몰 9층·10층</strong>에 있습니다. (확장 오픈 구간에 따라 일부 매장만 운영될 수 있습니다.)
-            </p>
-          </div>
+    <div class="store-info-grid">
+      <div class="store-info-card store-info-card--gold">
+        <div class="store-info-icon store-info-icon--gold"><i class="fa-solid fa-building"></i></div>
+        <div class="store-info-body">
+          <h3>전국 지점 매점·매표</h3>
+          <p style="font-size:.84rem; line-height:1.65; margin:0;">
+            <strong style="color:var(--text-primary);">안양 평촌 시네마몰 9~10층</strong> 본점 외에
+            <strong>강남·홍대·수원·천안·부산 센텀·대구·제주</strong> 등에서 동일하게 매점·스토어를 이용할 수 있습니다.
+            <span style="display:block; margin-top:8px; color:var(--text-muted);">지점별 매장 위치·영업시간은 현장 데스크 또는 공지를 확인해 주세요.</span>
+          </p>
         </div>
       </div>
-      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:20px 22px;">
-        <div style="display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;">
-          <i class="fa-solid fa-cash-register" style="color:var(--lotte-red); font-size:1.35rem; margin-top:2px;"></i>
-          <div style="flex:1; min-width:220px;">
-            <p style="font-weight:800; color:var(--text-primary); margin-bottom:6px;">팝콘·음료 — 매표소 &amp; 매점 키오스크에서 결제</p>
-            <p style="color:var(--text-muted); font-size:.88rem; line-height:1.65; margin:0;">
-              본 페이지는 <strong style="color:var(--text-primary);">메뉴·가격 안내·실적(장바구니) 연습용</strong>입니다.<br/>
-              실제 결제는 영화관 <strong>매표소</strong> 또는 <strong>매점 앞 키오스크</strong>에서 카드·간편결제로 진행해 주세요. (현장에서 동일 메뉴로 주문 가능)
-            </p>
-          </div>
+      <div class="store-info-card">
+        <div class="store-info-icon store-info-icon--red"><i class="fa-solid fa-credit-card"></i></div>
+        <div class="store-info-body">
+          <h3>온라인 결제 · 마이페이지에서 내역 확인</h3>
+          <p>로그인 후 <strong style="color:var(--text-primary);">결제하기</strong>를 누르면 금액이 서버에서 다시 계산되며, 완료 후 <strong style="color:var(--gold);">매점 주문</strong> 메뉴에 저장됩니다.</p>
         </div>
-      </div>
-      <div style="background:rgba(80,120,255,.08); border:1px solid rgba(120,160,255,.25); border-radius:14px; padding:16px 20px; font-size:.86rem; color:var(--text-muted); line-height:1.6;">
-        <i class="fa-solid fa-globe" style="color:#8ab4ff; margin-right:8px;"></i>
-        <strong style="color:var(--text-primary);">홈페이지·앱</strong>으로는 영화 예매가 가능하고,
-        <strong style="color:var(--text-primary);">현장 매표소</strong>에서도 동일 시간대 좌석 예매가 가능합니다. 매점만 단독 주문은 키오스크·매표를 이용해 주세요.
       </div>
     </div>
 
-    <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;">
-      <!-- 메뉴 그리드 -->
-      <div style="flex:1; min-width:280px;">
-        <h2 style="color:var(--gold); font-size:1.1rem; font-weight:800; margin-bottom:18px;">
-          <i class="fa-solid fa-burger" style="margin-right:8px;"></i>매점 메뉴
-        </h2>
-        <div id="store-products" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;"></div>
+    <div class="store-layout">
+      <div class="store-menu-col">
+        <div class="store-section-head">
+          <i class="fa-solid fa-burger"></i>
+          <h2>매점 메뉴</h2>
+        </div>
+        <div id="store-products"></div>
       </div>
 
-      <!-- 장바구니 (로컬·안내용) -->
-      <aside style="width:100%; max-width:340px; flex-shrink:0; position:sticky; top:24px;">
-        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:20px;">
-          <h3 style="font-size:1rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">
-            <i class="fa-solid fa-basket-shopping" style="color:var(--gold); margin-right:8px;"></i>담은 메뉴 (연습용)
-          </h3>
-          <ul id="cart-list" style="list-style:none; padding:0; margin:0 0 14px; min-height:72px; font-size:.88rem; color:var(--text-muted);"></ul>
-          <div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid var(--border-color); margin-bottom:14px;">
-            <span style="font-size:.85rem; color:var(--text-muted);">합계 (참고)</span>
+      <aside class="store-cart-panel">
+        <div class="store-cart-inner">
+          <h3><i class="fa-solid fa-basket-shopping"></i>장바구니</h3>
+          <ul id="cart-list" style="list-style:none; padding:0; margin:0 0 14px; font-size:.88rem; color:var(--text-muted);"></ul>
+          <div class="store-cart-total-row">
+            <span>합계</span>
             <span id="cart-total" style="font-size:1.15rem; font-weight:900; color:var(--gold);">0원</span>
           </div>
-          <button type="button" id="cart-clear" class="btn-submit" style="width:100%; padding:10px; opacity:.85; font-size:.85rem; background:transparent; border:1px solid var(--border-color); color:var(--text-muted);">
+
+          <label class="store-pay-label" for="pay-method">결제 수단</label>
+          <select id="pay-method" class="form-input">
+            <option value="CARD">신용·체크카드</option>
+            <option value="KAKAO">카카오페이</option>
+            <option value="NAVER">네이버페이</option>
+            <option value="TOSS">토스페이</option>
+            <option value="PHONE">휴대폰 결제</option>
+          </select>
+
+          <div sec:authorize="isAuthenticated()">
+            <button type="button" id="btn-checkout" class="btn-submit" style="width:100%; padding:12px; font-size:.95rem; font-weight:800;">
+              <i class="fa-solid fa-lock" style="margin-right:8px;"></i>결제하기
+            </button>
+          </div>
+          <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="btn-submit" style="display:block; width:100%; padding:12px; font-size:.95rem; font-weight:800; text-align:center; text-decoration:none; box-sizing:border-box;">
+              로그인 후 결제
+            </a>
+          </div>
+
+          <p id="pay-msg" style="display:none; font-size:.82rem; margin-top:12px; padding:10px; line-height:1.5;"></p>
+
+          <button type="button" id="cart-clear" class="btn-submit store-cart-clear">
             비우기
           </button>
-          <p style="font-size:.8rem; color:rgba(255,255,255,.45); margin:14px 0 0; line-height:1.5;">
-            결제는 하지 않습니다. 매표소·키오스크에서 주문하실 때 이 목록을 참고해 주세요.
-          </p>
         </div>
       </aside>
     </div>
   </div>
 </main>
 
+<div id="store-modal-backdrop" class="store-modal-backdrop" style="display:none;" aria-hidden="true">
+  <div id="store-modal-cart" class="store-modal-box" style="display:none;">
+    <div class="store-modal-img-wrap" id="modal-cart-visual"></div>
+    <h4 id="modal-cart-name"></h4>
+    <p>선택한 상품을 <strong style="color:var(--text-primary);">장바구니에 담겠습니까?</strong></p>
+    <div class="store-modal-actions">
+      <button type="button" id="modal-cart-no">아니오</button>
+      <button type="button" class="primary" id="modal-cart-yes">예</button>
+    </div>
+  </div>
+  <div id="store-modal-pay" class="store-modal-box" style="display:none;">
+    <h4>매점 결제</h4>
+    <p>아래 금액으로 <strong style="color:var(--gold);">결제하시겠습니까?</strong></p>
+    <p id="modal-pay-amount" style="font-size:1.25rem; font-weight:900; color:var(--gold); margin-bottom:8px;"></p>
+    <p style="font-size:.78rem;">확인 시 결제가 완료되며, <a href="/mypage/store-orders" style="color:var(--gold);">매점 주문</a>에 표시됩니다.</p>
+    <div class="store-modal-actions" style="margin-top:18px;">
+      <button type="button" id="modal-pay-no">아니오</button>
+      <button type="button" class="primary" id="modal-pay-yes">예</button>
+    </div>
+  </div>
+</div>
+
 <div th:replace="~{fragments/header :: footer}"></div>
 <script>
 (function(){
   const PRODUCTS = [
-    { id:'pop-s', name:'팝콘 S', price:4500, desc:'고소한 클래식', icon:'fa-cookie-bite' },
-    { id:'pop-m', name:'팝콘 M', price:5500, desc:'1~2인 추천', icon:'fa-cookie-bite' },
-    { id:'pop-l', name:'팝콘 L', price:6500, desc:'2~3인', icon:'fa-cookie-bite' },
-    { id:'pop-caramel', name:'카라멜 팝콘 M', price:6000, desc:'달콤 시나몬', icon:'fa-cookie-bite' },
-    { id:'combo-a', name:'콤보 A (팝콘M+탄산2)', price:11000, desc:'가장 많이 찾는 세트', icon:'fa-box-open' },
-    { id:'combo-b', name:'콤보 B (팝콘L+탄산2+초콜릿)', price:13500, desc:'달콤 셋업', icon:'fa-box-open' },
-    { id:'combo-sweet', name:'스위트 콤보', price:15000, desc:'VIP 생일 쿠폰과 동일 구성', icon:'fa-cake-candles' },
-    { id:'drink-soda', name:'탄산음료 M', price:3500, desc:'콜라·사이다 등', icon:'fa-mug-hot' },
-    { id:'drink-coffee', name:'아메리카노', price:4000, desc:'HOT/ICE', icon:'fa-mug-saucer' },
-    { id:'nacho', name:'나초 · 치즈', price:5500, desc:'함께 먹기 좋은 스낵', icon:'fa-pizza-slice' },
-    { id:'hotdog', name:'핫도그', price:5000, desc:'케첩·머스타드', icon:'fa-hotdog' },
-    { id:'pretzel', name:'프레첼', price:4500, desc:'고소한 빵 스낵', icon:'fa-bread-slice' }
+    { id:'pop-s', name:'팝콘 S', price:4500, desc:'카라멜 코팅 · 소용량', icon:'fa-cookie-bite', img:'/images/store/popcorn-s.png' },
+    { id:'pop-m', name:'팝콘 M', price:5500, desc:'1~2인 추천', icon:'fa-cookie-bite', img:'/images/store/popcorn-m.png' },
+    { id:'pop-l', name:'팝콘 L', price:6500, desc:'카라멜 · 대용량 · 2~3인', icon:'fa-cookie-bite', img:'/images/store/popcorn-l.png' },
+    { id:'pop-caramel', name:'카라멜 팝콘 M', price:6000, desc:'카라멜·버터 믹스', icon:'fa-cookie-bite', img:'/images/store/popcorn-caramel-m.png' },
+    { id:'combo-single', name:'싱글콤보 (카라멜L+탄산M)', price:11200, desc:'카라멜 팝콘 L + 탄산음료 1잔', icon:'fa-box-open', img:'/images/store/combo-single.png' },
+    { id:'combo-a', name:'콤보 A (팝콘M+탄산2)', price:11000, desc:'대용량 팝콘 + 탄산 2잔', icon:'fa-box-open', img:'/images/store/combo-a.png' },
+    { id:'combo-b', name:'콤보 B (팝콘L+탄산+스낵택1)', price:15200, desc:'대용량 팝콘·음료 + 스낵 4종 중 1', icon:'fa-box-open', img:'/images/store/combo-b.png' },
+    { id:'combo-sweet', name:'스위트 콤보 (팝콘L+탄산2+관람권2)', price:20000, desc:'대용량 팝콘·탄산 2잔 + 영화관람권 2매', icon:'fa-cake-candles', img:'/images/store/combo-sweet.png' },
+    { id:'drink-soda', name:'탄산음료 M', price:3500, desc:'콜라·사이다 등', icon:'fa-mug-hot', img:'/images/store/drink-soda-m.png' },
+    { id:'drink-coffee', name:'아메리카노', price:4000, desc:'ICE 그란데 · HOT/ICE 선택', icon:'fa-mug-saucer', img:'/images/store/drink-americano.png' },
+    { id:'nacho', name:'나초 · 치즈', price:5500, desc:'칩 + 칠리·할라피뇨 치즈 소스', icon:'fa-pizza-slice', img:'/images/store/nacho.png' },
+    { id:'hotdog', name:'핫도그', price:5000, desc:'케첩·머스타드 드레싱', icon:'fa-hotdog', img:'/images/store/hotdog.png' },
+    { id:'pretzel', name:'프레첼', price:4500, desc:'버터향 · 소금 토핑', icon:'fa-bread-slice', img:'/images/store/pretzel.png' }
   ];
-  const fixed = PRODUCTS.map((p, i) => ({ ...p, id: p.id + '-' + i }));
   const grid = document.getElementById('store-products');
   const cartList = document.getElementById('cart-list');
   const cartTotal = document.getElementById('cart-total');
+  const payMsg = document.getElementById('pay-msg');
   let cart = [];
 
   function formatWon(n) {
     return new Intl.NumberFormat('ko-KR').format(n) + '원';
+  }
+
+  function showPayMsg(text, ok) {
+    payMsg.style.display = 'block';
+    payMsg.style.background = ok ? 'rgba(76,175,80,.12)' : 'rgba(244,67,54,.12)';
+    payMsg.style.border = '1px solid ' + (ok ? 'rgba(76,175,80,.35)' : 'rgba(244,67,54,.35)');
+    payMsg.style.color = ok ? '#a5d6a7' : '#ffcdd2';
+    payMsg.innerHTML = text;
   }
 
   function renderCart() {
@@ -112,7 +548,7 @@
     if (cart.length === 0) {
       cartList.innerHTML = '<li style="opacity:.6;">담긴 상품이 없습니다. 메뉴에서 <strong style="color:var(--text-primary);">담기</strong>를 눌러 보세요.</li>';
     } else {
-      cart.forEach((line, idx) => {
+      cart.forEach((line) => {
         sum += line.price * line.qty;
         const li = document.createElement('li');
         li.style.cssText = 'display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.06); color:var(--text-light);';
@@ -128,20 +564,62 @@
     const found = cart.find(x => x.id === p.id);
     if (found) found.qty += 1;
     else cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+    payMsg.style.display = 'none';
     renderCart();
   }
 
-  fixed.forEach(p => {
+  const backdrop = document.getElementById('store-modal-backdrop');
+  const modalCart = document.getElementById('store-modal-cart');
+  const modalPay = document.getElementById('store-modal-pay');
+  const modalCartVisual = document.getElementById('modal-cart-visual');
+  const modalCartName = document.getElementById('modal-cart-name');
+  let pendingProduct = null;
+
+  function hideStoreModals() {
+    backdrop.style.display = 'none';
+    modalCart.style.display = 'none';
+    modalPay.style.display = 'none';
+    backdrop.setAttribute('aria-hidden', 'true');
+  }
+
+  function openCartModal(p) {
+    pendingProduct = p;
+    modalCartName.textContent = p.name;
+    if (p.img) {
+      modalCartVisual.innerHTML = '<img src="' + p.img + '" alt=""/>';
+    } else {
+      modalCartVisual.innerHTML = '<i class="fa-solid ' + p.icon + '"></i>';
+    }
+    modalPay.style.display = 'none';
+    modalCart.style.display = 'block';
+    backdrop.style.display = 'flex';
+    backdrop.setAttribute('aria-hidden', 'false');
+  }
+
+  document.getElementById('modal-cart-yes').onclick = function() {
+    if (pendingProduct) addToCart(pendingProduct);
+    hideStoreModals();
+  };
+  document.getElementById('modal-cart-no').onclick = hideStoreModals;
+  backdrop.addEventListener('click', function(e) {
+    if (e.target === backdrop) hideStoreModals();
+  });
+
+  PRODUCTS.forEach((p, idx) => {
     const card = document.createElement('div');
-    card.style.cssText = 'background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px;';
+    card.className = 'store-card';
+    card.style.animationDelay = (idx * 72) + 'ms';
+    const thumb = p.img
+      ? '<img src="' + p.img + '" alt="" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:6px;" loading="lazy" />'
+      : '<i class="fa-solid ' + p.icon + '" style="font-size:1.65rem; color:rgba(228,180,0,.5);"></i>';
     card.innerHTML =
-      '<div style="width:100%; aspect-ratio:16/10; border-radius:8px; background:rgba(228,180,0,.08); display:flex; align-items:center; justify-content:center;">' +
-        '<i class="fa-solid ' + p.icon + '" style="font-size:2rem; color:rgba(228,180,0,.45);"></i></div>' +
-      '<div style="font-weight:800; color:var(--text-primary); font-size:.95rem;">' + p.name + '</div>' +
-      '<div style="font-size:.78rem; color:var(--text-muted); line-height:1.4;">' + p.desc + '</div>' +
-      '<div style="font-weight:900; color:var(--gold); margin-top:auto;">' + formatWon(p.price) + '</div>' +
-      '<button type="button" class="btn-add-cart" style="margin-top:8px; padding:6px 12px; border-radius:8px; border:1px solid var(--gold); background:rgba(228,180,0,.12); color:var(--gold); font-weight:700; cursor:pointer; font-size:.85rem;">담기</button>';
-    card.querySelector('.btn-add-cart').onclick = () => addToCart(p);
+      '<div class="store-thumb" style="cursor:pointer;" title="크게 보기·담기">' + thumb + '</div>' +
+      '<div class="store-card-title">' + p.name + '</div>' +
+      '<div class="store-card-desc">' + p.desc + '</div>' +
+      '<div class="store-card-price" style="margin-top:auto;">' + formatWon(p.price) + '</div>' +
+      '<button type="button" class="btn-add-cart store-btn-cart">담기</button>';
+    card.querySelector('.store-thumb').addEventListener('click', function() { openCartModal(p); });
+    card.querySelector('.btn-add-cart').onclick = function() { openCartModal(p); };
     grid.appendChild(card);
   });
 
@@ -156,8 +634,70 @@
 
   document.getElementById('cart-clear').onclick = function() {
     cart = [];
+    payMsg.style.display = 'none';
     renderCart();
   };
+
+  function cartSum() {
+    return cart.reduce(function(s, c) { return s + c.price * c.qty; }, 0);
+  }
+
+  async function runStoreCheckout() {
+    const btnCheckout = document.getElementById('btn-checkout');
+    payMsg.style.display = 'none';
+    if (!cart.length) {
+      showPayMsg('담긴 메뉴가 없습니다.', false);
+      return;
+    }
+    const method = document.getElementById('pay-method').value;
+    const items = cart.map(function(c) { return { productId: c.id, qty: c.qty }; });
+    btnCheckout.disabled = true;
+    try {
+      const res = await fetch('/api/store/checkout', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: items, paymentMethod: method })
+      });
+      const data = await res.json().catch(function() { return {}; });
+      if (res.status === 401) {
+        showPayMsg('로그인이 필요합니다. 로그인 후 다시 시도해 주세요.', false);
+        return;
+      }
+      if (!res.ok || !data.ok) {
+        showPayMsg((data && data.message) ? data.message : '결제에 실패했습니다.', false);
+        return;
+      }
+      cart = [];
+      renderCart();
+      const link = '<a href="/mypage/store-orders" style="color:var(--gold); font-weight:700;">매점 주문 내역</a>';
+      showPayMsg('결제가 완료되었습니다. 마이페이지에서 확인할 수 있습니다. 주문번호 <strong>SN-' + data.orderId + '</strong> · ' + link, true);
+    } catch (e) {
+      showPayMsg('네트워크 오류로 결제를 완료하지 못했습니다.', false);
+    } finally {
+      btnCheckout.disabled = false;
+    }
+  }
+
+  const btnCheckout = document.getElementById('btn-checkout');
+  if (btnCheckout) {
+    btnCheckout.onclick = function() {
+      if (!cart.length) {
+        showPayMsg('담긴 메뉴가 없습니다.', false);
+        return;
+      }
+      document.getElementById('modal-pay-amount').textContent = formatWon(cartSum());
+      modalCart.style.display = 'none';
+      modalPay.style.display = 'block';
+      backdrop.style.display = 'flex';
+      backdrop.setAttribute('aria-hidden', 'false');
+    };
+  }
+  document.getElementById('modal-pay-yes').onclick = function() {
+    hideStoreModals();
+    runStoreCheckout();
+  };
+  document.getElementById('modal-pay-no').onclick = hideStoreModals;
 })();
 </script>
 </body>

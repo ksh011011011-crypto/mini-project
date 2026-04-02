@@ -124,4 +124,22 @@ public class ApiController {
             ));
         }
     }
+
+    /** 매점 주문 취소(데모) */
+    @PostMapping("/store/orders/{id}/cancel")
+    public ResponseEntity<Map<String, Object>> cancelStoreOrder(
+            @PathVariable Long id,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            return ResponseEntity.status(401).body(Map.of("message", "로그인이 필요합니다."));
+        }
+        try {
+            Member member = memberService.getByUsername(authentication.getName());
+            storeOrderService.cancelOrder(member, id);
+            return ResponseEntity.ok(Map.of("ok", true, "message", "매점 주문이 취소되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "message", e.getMessage()));
+        }
+    }
 }

@@ -21,6 +21,7 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final MovieRepository movieRepository;
+    private final PointService pointService;
 
     // 관람 요금표 (원) — 예매 화면 value·상영시간표 hall.key와 동일해야 함
     private static final Map<String, Integer> THEATER_PRICES = new HashMap<>() {{
@@ -68,6 +69,7 @@ public class BookingService {
 
         // VIP 승급 금액 반영 (매점 제외, 관람 금액만)
         member.addSpent(finalPrice);
+        pointService.earnFromBooking(member, saved.getId(), finalPrice, movie.getTitle());
 
         return saved;
     }

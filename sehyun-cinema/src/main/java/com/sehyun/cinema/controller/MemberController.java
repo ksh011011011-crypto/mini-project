@@ -4,10 +4,12 @@ import com.sehyun.cinema.dto.MemberJoinDto;
 import com.sehyun.cinema.entity.Booking;
 import com.sehyun.cinema.entity.Member;
 import com.sehyun.cinema.entity.Movie;
+import com.sehyun.cinema.entity.PointLedger;
 import com.sehyun.cinema.entity.StoreOrder;
 import com.sehyun.cinema.service.BookingService;
 import com.sehyun.cinema.service.MemberService;
 import com.sehyun.cinema.service.MovieService;
+import com.sehyun.cinema.service.PointService;
 import com.sehyun.cinema.service.StoreOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,11 +35,15 @@ public class MemberController {
     private final BookingService bookingService;
     private final MovieService movieService;
     private final StoreOrderService storeOrderService;
+    private final PointService pointService;
 
     @GetMapping("/login")
-    public String loginPage(@RequestParam(required = false) String error,
+    public String loginPage(HttpServletRequest request,
+                            @RequestParam(required = false) String error,
                             @RequestParam(required = false) String logout,
                             Model model) {
+        // CSRF 토큰이 세션을 필요로 하므로, 뷰 렌더·응답 버퍼 플러시 전에 세션을 확보한다.
+        request.getSession(true);
         if (error != null) {
             model.addAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
         }
@@ -111,14 +119,33 @@ public class MemberController {
     public String myStoreOrders(Authentication authentication, Model model) {
         Member member = memberService.getByUsername(authentication.getName());
         List<StoreOrder> orders = storeOrderService.getMyOrders(member);
+        List<StoreOrder> paidStoreOrders = orders.stream()
+                .filter(o -> "PAID".equals(o.getStatus()))
+                .collect(Collectors.toList());
+        List<StoreOrder> cancelledStoreOrders = orders.stream()
+                .filter(o -> "CANCELLED".equals(o.getStatus()))
+                .collect(Collectors.toList());
         Map<Long, List<Map<String, Object>>> orderLineMap = new LinkedHashMap<>();
         for (StoreOrder o : orders) {
             orderLineMap.put(o.getId(), storeOrderService.parseLinesJson(o));
         }
         model.addAttribute("member", member);
         model.addAttribute("storeOrders", orders);
+        model.addAttribute("paidStoreOrders", paidStoreOrders);
+        model.addAttribute("cancelledStoreOrders", cancelledStoreOrders);
         model.addAttribute("orderLineMap", orderLineMap);
         return "mypage-store-orders";
+    }
+
+    @GetMapping("/mypage/points")
+    public String myPoints(Authentication authentication, Model model) {
+        Member member = memberService.getByUsername(authentication.getName());
+        List<PointLedger> ledgers = pointService.getMyPoints(member);
+        int totalPoints = pointService.getTotalPoints(member);
+        model.addAttribute("member", member);
+        model.addAttribute("pointLedgers", ledgers);
+        model.addAttribute("totalPoints", totalPoints);
+        return "mypage-points";
     }
 
     @GetMapping("/mypage/reviews")

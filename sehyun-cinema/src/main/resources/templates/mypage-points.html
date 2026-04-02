@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('포인트 적립')}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="page-mypage" style="padding:50px 0 80px; color:#e8e8f0;">
+  <div class="container-xl" style="max-width:860px;">
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:28px;">
+      <a th:href="@{/mypage}" style="color:var(--text-muted);"><i class="fa-solid fa-arrow-left"></i></a>
+      <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">포인트 적립 내역</h1>
+    </div>
+
+    <div style="background:linear-gradient(135deg, rgba(228,180,0,.12), rgba(21,21,37,.9)); border:1px solid rgba(228,180,0,.25); border-radius:16px; padding:22px 24px; margin-bottom:28px;">
+      <p style="color:var(--text-muted); font-size:.82rem; margin-bottom:10px;">누적 보유 포인트 (데모: 결제 금액의 1% 적립)</p>
+      <p style="font-size:2rem; font-weight:900; color:var(--gold);"
+         th:text="${#numbers.formatInteger(totalPoints,1,'COMMA')} + ' P'">0 P</p>
+    </div>
+
+    <p style="color:var(--text-muted); font-size:.86rem; margin-bottom:20px; line-height:1.6;">
+      영화 예매·매점 결제가 모두 여기에 구분되어 표시됩니다.
+    </p>
+
+    <div th:if="${pointLedgers.empty}" style="text-align:center; padding:48px; color:var(--text-muted);">
+      <i class="fa-solid fa-coins" style="font-size:3rem; opacity:.2; display:block; margin-bottom:12px;"></i>
+      아직 적립 내역이 없습니다.
+    </div>
+
+    <div th:each="row : ${pointLedgers}"
+         style="background:var(--bg-card); border-radius:12px; border:1px solid rgba(255,255,255,.06); padding:18px 20px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <span th:if="${row.category == 'BOOKING'}" class="status-badge confirmed" style="display:inline-block; margin-bottom:8px;">영화 예매</span>
+        <span th:if="${row.category == 'STORE'}" class="status-badge screening" style="display:inline-block; margin-bottom:8px;">매점</span>
+        <p style="color:var(--text-primary); font-size:.88rem; font-weight:600; margin:0;"
+           th:text="${row.description}">설명</p>
+        <p style="color:var(--text-muted); font-size:.75rem; margin-top:6px;"
+           th:text="${#temporals.format(row.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+      </div>
+      <div style="font-size:1.15rem; font-weight:900; color:var(--gold);"
+           th:text="'+' + ${#numbers.formatInteger(row.points,1,'COMMA')} + ' P'">+0 P</div>
+    </div>
+  </div>
+</main>
+<div th:replace="~{fragments/header :: footer}"></div>
+</body>
+</html>

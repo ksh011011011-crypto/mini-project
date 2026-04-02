@@ -112,7 +112,8 @@ public class DataInitializer implements CommandLineRunner {
         m.put("미션 임파서블: 파이널 레코닝", "https://image.tmdb.org/t/p/w500/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg");
         m.put("캡틴 아메리카: 브레이브 뉴 월드", "https://image.tmdb.org/t/p/w500/pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg");
         m.put("오징어 게임: 더 무비", "https://image.tmdb.org/t/p/w500/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg");
-        m.put("우리에게는 아직 내일이 있다", "https://image.tmdb.org/t/p/w500/ha8jQpBVEgqLbk3ZbgKXOVRUFJd.jpg");
+        /* 공식 포스터 — static/images/posters/theres-still-tomorrow.png (사용자 제공) */
+        m.put("우리에게는 아직 내일이 있다", "/images/posters/theres-still-tomorrow.png");
         m.put("분노의 질주: 파이널", "https://image.tmdb.org/t/p/w500/fiVW06jE7z9YnO4trhaMEdclSiC.jpg");
         m.put("앤트맨과 와스프: 퀀터매니아", "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg");
         m.put("스파이더맨: 어크로스 더 유니버스", "https://image.tmdb.org/t/p/w500/gj6Gy5VQlL4vO3q9dZcNXZjIiID.jpg");
@@ -157,14 +158,19 @@ public class DataInitializer implements CommandLineRunner {
         m.put("변호인", "/images/posters/byeonhoin.png");
         /* 공식 포스터 — static/images/posters/assassination.png (사용자 제공) */
         m.put("암살", "/images/posters/assassination.png");
-        m.put("아바타 3", "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg");
+        /* 공식 포스터 — 아바타: 불과 재 (사용자 제공) → static/images/posters/avatar-3.png */
+        m.put("아바타 3", "/images/posters/avatar-3.png");
         /* 공식 포스터 — static/images/posters/wicked.png (사용자 제공) */
         m.put("위키드", "/images/posters/wicked.png");
-        m.put("모아나 2", "https://image.tmdb.org/t/p/w500/yh64qwwGqSbyiKkVmaFi2wvnBPH.jpg");
-        m.put("브라이드!", "https://image.tmdb.org/t/p/w500/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg");
-        m.put("우리는 매일매일", "https://image.tmdb.org/t/p/w500/9P4BUjqFtOyAM4TLM8O8TJlIifm.jpg");
+        /* 공식 포스터 — static/images/posters/moana-2.png (사용자 제공) */
+        m.put("모아나 2", "/images/posters/moana-2.png");
+        /* 공식 포스터 — static/images/posters/bride.png (사용자 제공) */
+        m.put("브라이드!", "/images/posters/bride.png");
+        /* 공식 포스터 — static/images/posters/woorineun-maeilmaeil.png (사용자 제공) */
+        m.put("우리는 매일매일", "/images/posters/woorineun-maeilmaeil.png");
         m.put("소년들", "https://image.tmdb.org/t/p/w500/rgyKMJkZfDdcfjfIPfNSgVJ7S44.jpg");
-        m.put("다음 소희", "https://image.tmdb.org/t/p/w500/2Vgmre6UAWZX8H3oBW9p0kPiHiM.jpg");
+        /* 공식 포스터 — static/images/posters/next-sohee.png (사용자 제공) */
+        m.put("다음 소희", "/images/posters/next-sohee.png");
         m.put("오펜하이머", "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg");
         m.put("듄2", "/images/posters/dune-part-two.png");
         m.put("듄", "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg");
@@ -423,8 +429,8 @@ public class DataInitializer implements CommandLineRunner {
            "https://image.tmdb.org/t/p/w500/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg", 0.0, 0,
            "에단 헌트(톰 크루즈)의 마지막 임무. 시리즈 최종장."},
           {"아바타 3",          "SF/액션",       "UPCOMING", null, "12세이상",
-           "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg", 0.0, 0,
-           "제임스 카메론 감독의 아바타 3편. 나비족의 새로운 세계."},
+           "/images/posters/avatar-3.png", 0.0, 0,
+           "제임스 카메론 감독, 한국어 부제 아바타: 불과 재. 나비족의 새로운 이야기."},
           {"분노의 질주: 파이널", "액션",         "UPCOMING", null, "15세이상",
            "https://image.tmdb.org/t/p/w500/fiVW06jE7z9YnO4trhaMEdclSiC.jpg", 0.0, 0,
            "도미닉 토레토 패밀리의 진짜 마지막 이야기."},
@@ -436,13 +442,13 @@ public class DataInitializer implements CommandLineRunner {
            "전 세계를 열광시킨 오징어 게임 IP의 극장판."},
           // ── 아르떼(Arte/독립) ───────────────────────────────
           {"브라이드!",         "로맨스/코미디", "ARTE", null, "12세이상",
-           "https://image.tmdb.org/t/p/w500/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg", 7.3, 15,
+           "/images/posters/bride.png", 7.3, 15,
            "결혼식 전날 도망친 신부의 엉뚱하고 유쾌한 하루를 담은 인디 로맨스."},
           {"우리는 매일매일",   "다큐멘터리",    "ARTE", null, "전체이용가",
-           "https://image.tmdb.org/t/p/w500/9P4BUjqFtOyAM4TLM8O8TJlIifm.jpg", 8.4, 12,
+           "/images/posters/woorineun-maeilmaeil.png", 8.4, 12,
            "평범한 사람들의 특별한 일상을 담은 감동적인 다큐멘터리."},
           {"우리에게는 아직 내일이 있다", "드라마/독립", "ARTE", null, "전체이용가",
-           "https://image.tmdb.org/t/p/w500/ha8jQpBVEgqLbk3ZbgKXOVRUFJd.jpg", 9.1, 10,
+           "/images/posters/theres-still-tomorrow.png", 9.1, 10,
            "이탈리아 독립영화계의 화제작. 여성의 연대와 자립을 그린 따뜻한 이야기."},
         };
 
@@ -501,14 +507,14 @@ public class DataInitializer implements CommandLineRunner {
            "/images/posters/wicked.png", 0.0, 0,
            "브로드웨이 최장 히트 뮤지컬의 영화화. 오즈의 마법사 이전 이야기."},
           {"모아나 2",       "애니메이션",    "UPCOMING", null,"전체이용가",
-           "https://image.tmdb.org/t/p/w500/yh64qwwGqSbyiKkVmaFi2wvnBPH.jpg", 0.0, 0,
+           "/images/posters/moana-2.png", 0.0, 0,
            "디즈니 애니메이션 모아나의 두 번째 모험. 더 넓은 바다로 나아가다."},
           // ── 아르떼 추가분 ────────────────────────────────────
           {"소년들",         "드라마/독립",   "ARTE", null,"12세이상",
            "https://image.tmdb.org/t/p/w500/rgyKMJkZfDdcfjfIPfNSgVJ7S44.jpg", 8.5, 8,
            "1999년 삼례 나라슈퍼 사건의 진실. 억울한 청소년들의 이야기."},
           {"다음 소희",      "드라마",        "ARTE", null,"15세이상",
-           "https://image.tmdb.org/t/p/w500/2Vgmre6UAWZX8H3oBW9p0kPiHiM.jpg", 9.0, 9,
+           "/images/posters/next-sohee.png", 9.0, 9,
            "정주리 감독. 콜센터 실습생 소희의 비극. 현실을 직시하는 독립영화."},
           {"인사이드 아웃 2", "애니메이션/가족", "SHOWING", null, "전체이용가",
            "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", 8.4, 22,

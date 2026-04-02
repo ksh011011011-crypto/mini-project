@@ -18,9 +18,10 @@ public final class StoreCatalog {
         m.put("pop-m", new Product("pop-m", "팝콘 M", 5500));
         m.put("pop-l", new Product("pop-l", "팝콘 L", 6500));
         m.put("pop-caramel", new Product("pop-caramel", "카라멜 팝콘 M", 6000));
+        m.put("combo-single", new Product("combo-single", "싱글콤보 (카라멜L+탄산M)", 11200));
         m.put("combo-a", new Product("combo-a", "콤보 A (팝콘M+탄산2)", 11000));
-        m.put("combo-b", new Product("combo-b", "콤보 B (팝콘L+탄산2+초콜릿)", 13500));
-        m.put("combo-sweet", new Product("combo-sweet", "스위트 콤보", 15000));
+        m.put("combo-b", new Product("combo-b", "콤보 B (팝콘L+탄산+스낵택1)", 15200));
+        m.put("combo-sweet", new Product("combo-sweet", "스위트 콤보 (팝콘L+탄산2+관람권2)", 20000));
         m.put("drink-soda", new Product("drink-soda", "탄산음료 M", 3500));
         m.put("drink-coffee", new Product("drink-coffee", "아메리카노", 4000));
         m.put("nacho", new Product("nacho", "나초 · 치즈", 5500));
